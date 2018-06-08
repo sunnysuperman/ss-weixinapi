@@ -1,15 +1,15 @@
 package com.sunnysuperman.weixinapi.component;
 
-public class QueryAuthResponse {
-    private AuthorizerToken authorization_info;
+public class AuthorizationInfo {
+    private String authorization_appid;
     private AuthorizationFunction[] func_info;
 
-    public AuthorizerToken getAuthorization_info() {
-        return authorization_info;
+    public String getAuthorization_appid() {
+        return authorization_appid;
     }
 
-    public void setAuthorization_info(AuthorizerToken authorization_info) {
-        this.authorization_info = authorization_info;
+    public void setAuthorization_appid(String authorization_appid) {
+        this.authorization_appid = authorization_appid;
     }
 
     public AuthorizationFunction[] getFunc_info() {

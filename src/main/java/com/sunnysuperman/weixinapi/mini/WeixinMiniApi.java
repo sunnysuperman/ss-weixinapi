@@ -8,28 +8,44 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.StringUtil;
-import com.sunnysuperman.weixinapi.WeixinApi;
+import com.sunnysuperman.weixinapi.BaseResponse;
+import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
+import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.WeixinAppType;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.prototype.PKCS7Encoder;
 
-public class WeixinMiniApi extends WeixinApi {
+public class WeixinMiniApi extends TokenAwareWeixinApi {
 
-    public WeixinMiniApi(WeixinApp app) {
-        super(app);
+    public WeixinMiniApi(WeixinApp app, WeixinAppTokenGetter tokenGetter) {
+        super(app, tokenGetter);
         if (app.getAppType() != WeixinAppType.mini) {
             throw new RuntimeException("Not a miniprogram weixin app");
         }
     }
 
-    public GetMiniSessionResponse getSession(String code) throws WeixinApiException {
+    public WeixinMiniApi(WeixinApp app) {
+        this(app, null);
+    }
+
+    public GetMiniSessionResponse getSession(String code, String componentAppId, String componentAccessToken)
+            throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("appid", app.getAppId());
-        params.put("secret", app.getAppSecret());
         params.put("js_code", code);
         params.put("grant_type", "authorization_code");
+        if (componentAppId != null) {
+            params.put("component_appid", componentAppId);
+            params.put("component_access_token", componentAccessToken);
+        } else {
+            params.put("secret", app.getAppSecret());
+        }
         return get("sns/jscode2session", params, new GetMiniSessionResponse());
+    }
+
+    public GetMiniSessionResponse getSession(String code) throws WeixinApiException {
+        return getSession(code, null, null);
     }
 
     public MiniUserInfo decryptUserInfo(String encryptedData, String sessionKey, String iv, String rawData,
@@ -49,6 +65,39 @@ public class WeixinMiniApi extends WeixinApi {
         }
         String userInfo = new String(PKCS7Encoder.decode(contentBytes), StringUtil.UTF8_CHARSET);
         return Bean.fromJson(userInfo, new MiniUserInfo());
+    }
+
+    public void setDomains(MiniServerDomains domains) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("action", "set");
+        params.put("requestdomain", domains.getRequestdomain());
+        params.put("wsrequestdomain", domains.getWsrequestdomain());
+        params.put("uploaddomain", domains.getUploaddomain());
+        params.put("downloaddomain", domains.getDownloaddomain());
+        postJSON("wxa/modify_domain?access_token=" + getTokenGetter().getAccessToken(), params, new BaseResponse());
+    }
+
+    public MiniServerDomains getDomains() throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("action", "get");
+        return postJSON("wxa/modify_domain?access_token=" + getTokenGetter().getAccessToken(), params,
+                new MiniServerDomains());
+    }
+
+    public void setWebviewDomains(String[] domains) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("action", "set");
+        params.put("webviewdomain", domains);
+        try {
+            postJSON("wxa/setwebviewdomain?access_token=" + getTokenGetter().getAccessToken(), params,
+                    new BaseResponse());
+        } catch (WeixinApiException e) {
+            if (e.getErrorCode() == 89019) {
+                // 业务域名无更改，无需重复设置
+                return;
+            }
+            throw e;
+        }
     }
 
 }

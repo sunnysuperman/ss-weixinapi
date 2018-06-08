@@ -1,8 +1,11 @@
 package com.sunnysuperman.weixinapi.user;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sunnysuperman.commons.util.StringUtil;
 import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
@@ -14,13 +17,42 @@ public class WeixinUserApi extends TokenAwareWeixinApi {
         super(app, tokenGetter);
     }
 
+    public String getAuthorizeUrl(String redirectUrl, String componentAppId) {
+        StringBuilder buf;
+        try {
+            buf = new StringBuilder("https://open.weixin.qq.com/connect/oauth2/authorize?appid=").append(app.getAppId())
+                    .append("&redirect_uri=").append(URLEncoder.encode(redirectUrl, StringUtil.UTF8))
+                    .append("&response_type=code&scope=snsapi_userinfo&state=");
+            if (componentAppId != null) {
+                buf.append("&component_appid=").append(componentAppId);
+            }
+            buf.append("#wechat_redirect");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return buf.toString();
+    }
+
     public GetAccessTokenResponse getAccessToken(String code) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("appid", app.getAppId());
-        params.put("secret", app.getAppSecret());
         params.put("code", code);
+        params.put("secret", app.getAppSecret());
         return get("sns/oauth2/access_token", params, new GetAccessTokenResponse());
+    }
+
+    public GetAccessTokenResponse getAccessToken(String code, String componentAppId, String componentAccessToken)
+            throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("grant_type", "authorization_code");
+        params.put("appid", app.getAppId());
+        params.put("code", code);
+        if (componentAppId != null) {
+            params.put("component_appid", componentAppId);
+            params.put("component_access_token", componentAccessToken);
+        }
+        return get("sns/oauth2/component/access_token", params, new GetAccessTokenResponse());
     }
 
     public RefreshTokenResponse refreshToken(String refreshToken) throws WeixinApiException {

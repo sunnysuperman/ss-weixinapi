@@ -1,6 +1,6 @@
 package com.sunnysuperman.weixinapi.token;
 
-public class GetJsTicketResponse {
+public class GetTicketResponse {
     private String ticket;
     private int expires_in;
 

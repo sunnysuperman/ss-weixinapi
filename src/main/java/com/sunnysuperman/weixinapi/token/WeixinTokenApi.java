@@ -21,11 +21,15 @@ public class WeixinTokenApi extends WeixinApi {
         return get("cgi-bin/token", params, new GetGlobalAccessTokenResponse());
     }
 
-    public GetJsTicketResponse getJsTicket(String globalAccessToken) throws WeixinApiException {
+    public GetTicketResponse getTicket(String accessToken, String type) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
-        params.put("access_token", globalAccessToken);
-        params.put("type", "jsapi");
-        return get("cgi-bin/ticket/getticket", params, new GetJsTicketResponse());
+        params.put("access_token", accessToken);
+        params.put("type", type);
+        return get("cgi-bin/ticket/getticket", params, new GetTicketResponse());
+    }
+
+    public GetTicketResponse getJsTicket(String accessToken) throws WeixinApiException {
+        return getTicket(accessToken, "jsapi");
     }
 
 }
