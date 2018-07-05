@@ -31,6 +31,16 @@ public class WeixinComponentApi extends WeixinApi {
         }
     }
 
+    public String encryptMsg(String postData, String timestamp, String nonce) {
+        try {
+            WXBizMsgCrypt crypt = new WXBizMsgCrypt(app.getAppToken(), app.getAppAesKey(), app.getAppId());
+            String xml = crypt.encryptMsg(postData, timestamp, nonce);
+            return xml;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String decryptVerifyTicket(String postData, String signature, String timestamp, String nonce) {
         Map<String, Object> data = decryptMessage(postData, signature, timestamp, nonce);
         return data.get("ComponentVerifyTicket").toString();

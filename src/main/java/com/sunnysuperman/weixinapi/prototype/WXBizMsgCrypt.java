@@ -23,6 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.sunnysuperman.commons.util.StringUtil;
+
 /**
  * 提供接收和推送给公众平台消息的加解密接口(UTF8编码的字符串).
  * <ol>
@@ -222,16 +224,11 @@ public class WXBizMsgCrypt {
     public String encryptMsg(String replyMsg, String timeStamp, String nonce) throws AesException {
         // 加密
         String encrypt = encrypt(getRandomStr(), replyMsg);
-
         // 生成安全签名
-        if (timeStamp == "") {
+        if (StringUtil.isEmpty(timeStamp)) {
             timeStamp = Long.toString(System.currentTimeMillis());
         }
-
         String signature = SHA1.getSHA1(token, timeStamp, nonce, encrypt);
-
-        // System.out.println("发送给平台的签名是: " + signature[1].toString());
-        // 生成发送的xml
         String result = XMLParse.generate(encrypt, signature, timeStamp, nonce);
         return result;
     }

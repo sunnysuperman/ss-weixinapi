@@ -6,6 +6,6 @@ public interface WeixinAppTokenGetter {
 
     String getAccessToken() throws WeixinBadAccessTokenException;
 
-    String getJsTicket() throws WeixinBadAccessTokenException;
+    // String getJsTicket() throws WeixinBadAccessTokenException;
 
 }

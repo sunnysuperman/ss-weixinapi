@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.FormatUtil;
 import com.sunnysuperman.commons.util.JSONUtil;
@@ -36,20 +37,17 @@ public class WeixinApi {
 
     protected <T> T parseResult(String apiUrl, String responseBody, T bean, boolean camelizeJSON)
             throws WeixinApiException {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("[WeixinApi] call " + apiUrl + ", result: " + responseBody);
+        }
         Map<String, Object> result = JSONUtil.parseJSONObject(responseBody);
         if (result == null) {
             throw new WeixinApiException(-1, "Failed to parse weixin api result: " + responseBody);
         }
         Integer errcode = FormatUtil.parseInteger(result.get("errcode"));
         if (errcode != null && errcode != 0) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn("[WeixinApi] Failed to call " + apiUrl + ", result: " + responseBody);
-            }
             String errmsg = FormatUtil.parseString(result.get("errmsg"));
             throw new WeixinApiException(errcode, errmsg);
-        }
-        if (LOG.isInfoEnabled()) {
-            LOG.info("[WeixinApi] call " + apiUrl + ", result: " + responseBody);
         }
         if (camelizeJSON) {
             return WeixinJSONHelper.fromMap(result, bean);
@@ -132,7 +130,7 @@ public class WeixinApi {
     protected <T> T postJSON(String api, Object params, T bean, boolean camelizeJSON) throws WeixinApiException {
         WeixinHttpClient client = new WeixinHttpClient();
         String apiUrl = wrapApiUrl(api);
-        String requestBody = JSONUtil.toJSONString(params);
+        String requestBody = JSONUtil.toJSONString(params, null, SerializerFeature.DisableCircularReferenceDetect);
         String responseBody;
         try {
             responseBody = client.post(apiUrl, "application/json; charset=UTF-8", requestBody, null);

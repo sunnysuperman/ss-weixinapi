@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,6 +56,33 @@ public class XMLParser {
         XStream xStream = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("-_", "_")));
         xStream.autodetectAnnotations(true);
         return xStream.toXML(o);
+    }
+
+    public static String toXML(Map<?, ?> map) {
+        StringBuilder buf = new StringBuilder("<xml>");
+        toXML(map, buf);
+        buf.append("</xml>");
+        return buf.toString();
+    }
+
+    private static void toXML(Map<?, ?> map, StringBuilder buf) {
+        for (Entry<?, ?> entry : map.entrySet()) {
+            String key = entry.getKey().toString();
+            buf.append("<").append(key).append(">");
+            Object value = entry.getValue();
+            if (value != null) {
+                if (value instanceof Map) {
+                    toXML((Map<?, ?>) value, buf);
+                } else {
+                    if (value instanceof String) {
+                        buf.append("![CDATA[").append(value.toString()).append("]]");
+                    } else {
+                        buf.append(value.toString());
+                    }
+                }
+            }
+            buf.append("</").append(key).append(">");
+        }
     }
 
 }

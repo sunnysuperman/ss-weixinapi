@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 public class BaseTest extends TestCase {
     private static PropertiesConfig config;
     static {
-        config = new PropertiesConfig(BaseTest.class.getResourceAsStream("/testresources/test.properties"));
+        config = new PropertiesConfig(BaseTest.class.getResourceAsStream("/test-resources/test.properties"));
     }
 
     protected String getString(String key) {
@@ -22,7 +22,7 @@ public class BaseTest extends TestCase {
     }
 
     public static InputStream getResourceAsStream(String fileName) {
-        return BaseTest.class.getResourceAsStream("/testresources/" + fileName);
+        return BaseTest.class.getResourceAsStream("/test-resources/" + fileName);
     }
 
     public static File getUserDir() {

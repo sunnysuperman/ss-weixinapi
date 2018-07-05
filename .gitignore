@@ -9,5 +9,5 @@
 #virtual machine crash logs
 hs_err_pid*
 
-/src/test/resources/testresources/test.properties
-/src/test/resources/testresources/security
+/src/test/resources/test-resources/test.properties
+/src/test/resources/test-resources/security
