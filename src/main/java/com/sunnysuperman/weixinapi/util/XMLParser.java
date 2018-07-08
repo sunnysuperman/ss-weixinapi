@@ -75,7 +75,7 @@ public class XMLParser {
                     toXML((Map<?, ?>) value, buf);
                 } else {
                     if (value instanceof String) {
-                        buf.append("![CDATA[").append(value.toString()).append("]]");
+                        buf.append("<![CDATA[").append(value.toString()).append("]]>");
                     } else {
                         buf.append(value.toString());
                     }
