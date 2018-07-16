@@ -35,17 +35,18 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         params.put("appid", app.getAppId());
         params.put("js_code", code);
         params.put("grant_type", "authorization_code");
-        if (componentAppId != null) {
-            params.put("component_appid", componentAppId);
-            params.put("component_access_token", componentAccessToken);
-        } else {
-            params.put("secret", app.getAppSecret());
-        }
-        return get("sns/jscode2session", params, new GetMiniSessionResponse());
+        params.put("component_appid", componentAppId);
+        params.put("component_access_token", componentAccessToken);
+        return get("sns/component/jscode2session", params, new GetMiniSessionResponse());
     }
 
     public GetMiniSessionResponse getSession(String code) throws WeixinApiException {
-        return getSession(code, null, null);
+        Map<String, Object> params = new HashMap<>();
+        params.put("appid", app.getAppId());
+        params.put("js_code", code);
+        params.put("grant_type", "authorization_code");
+        params.put("secret", app.getAppSecret());
+        return get("sns/jscode2session", params, new GetMiniSessionResponse());
     }
 
     public MiniUserInfo decryptUserInfo(String encryptedData, String sessionKey, String iv, String rawData,
