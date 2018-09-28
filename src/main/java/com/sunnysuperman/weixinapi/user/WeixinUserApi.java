@@ -107,4 +107,17 @@ public class WeixinUserApi extends TokenAwareWeixinApi {
         }
         return userinfo;
     }
+
+    public GetUsersResponse getUsers(String nextOpenid) throws WeixinApiException {
+        String accessToken = tokenGetter == null ? null : tokenGetter.getAccessToken();
+        if (accessToken == null) {
+            return null;
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("access_token", accessToken);
+        if (nextOpenid != null) {
+            params.put("next_openid", nextOpenid);
+        }
+        return get("cgi-bin/user/get", params, new GetUsersResponse());
+    }
 }
