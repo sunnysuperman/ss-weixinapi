@@ -3,8 +3,11 @@ package com.sunnysuperman.weixinapi.test;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.WeixinAppType;
+import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.exception.WeixinBadAccessTokenException;
 import com.sunnysuperman.weixinapi.message.SendCustomMessageRequest;
+import com.sunnysuperman.weixinapi.message.SendCustomMessageRequest.ArticleMessage;
+import com.sunnysuperman.weixinapi.message.SendMessageResponse;
 import com.sunnysuperman.weixinapi.message.WeixinMessageApi;
 
 public class MessageApiTest extends BaseTest {
@@ -26,8 +29,26 @@ public class MessageApiTest extends BaseTest {
 
     public void test_sendCustomMessage() throws Exception {
         SendCustomMessageRequest request = new SendCustomMessageRequest();
-        request.setTouser("oyNtA0q0JFPiX9mflFweW8nwIvJs");
+        request.setTouser("xx");
         request.setText("这是测试😓客服消息😓");
         api.sendCustomMessage(request);
+    }
+
+    public void test_sendCustomMessageArticle() throws Exception {
+        SendCustomMessageRequest request = new SendCustomMessageRequest();
+        request.setTouser("xx");
+        ArticleMessage article = new ArticleMessage();
+        article.setTitle("推送标题");
+        article.setDescription("推送简介");
+        article.setUrl("http://www.baidu.com/");
+        article.setPicurl("https://xx.png");
+        request.setArticles(new ArticleMessage[] { article });
+        try {
+            SendMessageResponse response = api.sendCustomMessage(request);
+            assertTrue(response.getMsgid() != null);
+        } catch (WeixinApiException ex) {
+            System.err.println(ex.getErrorCode() + ":" + ex.getErrorMsg());
+            assertTrue(false);
+        }
     }
 }

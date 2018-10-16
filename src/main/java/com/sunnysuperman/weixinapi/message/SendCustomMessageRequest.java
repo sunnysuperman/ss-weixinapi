@@ -41,12 +41,52 @@ public class SendCustomMessageRequest {
 
     }
 
+    public static class ArticleMessage {
+        private String title;
+        private String description;
+        private String url;
+        private String picurl;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getPicurl() {
+            return picurl;
+        }
+
+        public void setPicurl(String picurl) {
+            this.picurl = picurl;
+        }
+
+    }
+
     private String touser;
     private String text;
     private String image;
     private String voice;
     private VideoMessage video;
-    // TODO more
+    private ArticleMessage[] articles;
 
     public String getTouser() {
         return touser;
@@ -86,6 +126,14 @@ public class SendCustomMessageRequest {
 
     public void setVideo(VideoMessage video) {
         this.video = video;
+    }
+
+    public ArticleMessage[] getArticles() {
+        return articles;
+    }
+
+    public void setArticles(ArticleMessage[] articles) {
+        this.articles = articles;
     }
 
 }

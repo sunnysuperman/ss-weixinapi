@@ -84,6 +84,9 @@ public class WeixinMessageApi extends TokenAwareWeixinApi {
             videoContent.put("title", request.getVideo().getTitle());
             videoContent.put("description", request.getVideo().getDescription());
             params.put("video", videoContent);
+        } else if (request.getArticles() != null) {
+            params.put("msgtype", "news");
+            params.put("news", Collections.singletonMap("articles", request.getArticles()));
         } else {
             throw new IllegalArgumentException("Bad message type");
         }
