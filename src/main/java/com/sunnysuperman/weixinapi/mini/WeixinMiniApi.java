@@ -1,6 +1,8 @@
 package com.sunnysuperman.weixinapi.mini;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
@@ -99,6 +101,56 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
             }
             throw e;
         }
+    }
+
+    public void commit(String templateId, String extJson, String version, String desc) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("template_id", templateId);
+        params.put("ext_json", extJson);
+        params.put("user_version", version);
+        params.put("user_desc", desc);
+        postJSON("wxa/commit?access_token=" + getTokenGetter().getAccessToken(), params, new BaseResponse());
+    }
+
+    public String getQrcode(String path) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("path", path);
+        return wrapApiUrl("wxa/get_qrcode?access_token=" + getTokenGetter().getAccessToken());
+    }
+
+    public SubmitResponse submit(List<MiniSubmitItem> items) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("item_list", items);
+        return postJSON("wxa/submit_audit?access_token=" + getTokenGetter().getAccessToken(), params,
+                new SubmitResponse());
+    }
+
+    public AuditResponse getAuditStatus(String auditId) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("auditid", auditId);
+        return postJSON("wxa/get_auditstatus?access_token=" + getTokenGetter().getAccessToken(), params,
+                new AuditResponse());
+    }
+
+    public AuditResponse getLatestAuditStatus() throws WeixinApiException {
+        return get("wxa/get_latest_auditstatus?access_token=" + getTokenGetter().getAccessToken(), null,
+                new AuditResponse());
+    }
+
+    public void publishQrcodeJump(String prefix) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("prefix", prefix);
+        post("cgi-bin/wxopen/qrcodejumppublish?access_token=" + getTokenGetter().getAccessToken(), params,
+                new BaseResponse());
+    }
+
+    public void release() throws WeixinApiException {
+        postJSON("wxa/release?access_token=" + getTokenGetter().getAccessToken(), Collections.emptyMap(),
+                new BaseResponse());
+    }
+
+    public void undoAudit() throws WeixinApiException {
+        get("wxa/undocodeaudit?access_token=" + getTokenGetter().getAccessToken(), null, new BaseResponse());
     }
 
 }

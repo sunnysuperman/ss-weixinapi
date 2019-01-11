@@ -118,7 +118,7 @@ public class WeixinHttpClient {
 
     public String post(String url, String mediaType, String body, Map<String, Object> headers) throws IOException {
         Request.Builder reqBuilder = requestBuilder(url, null, headers);
-        RequestBody reqBody = RequestBody.create(MediaType.parse(mediaType), body);
+        RequestBody reqBody = RequestBody.create(MediaType.parse(mediaType), body != null ? body : StringUtil.EMPTY);
         Request request = reqBuilder.post(reqBody).build();
         return execute(request);
     }

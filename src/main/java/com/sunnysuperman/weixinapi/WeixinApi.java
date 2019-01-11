@@ -130,7 +130,8 @@ public class WeixinApi {
     protected <T> T postJSON(String api, Object params, T bean, boolean camelizeJSON) throws WeixinApiException {
         WeixinHttpClient client = new WeixinHttpClient();
         String apiUrl = wrapApiUrl(api);
-        String requestBody = JSONUtil.toJSONString(params, null, SerializerFeature.DisableCircularReferenceDetect);
+        String requestBody = params == null ? null
+                : JSONUtil.toJSONString(params, null, SerializerFeature.DisableCircularReferenceDetect);
         String responseBody;
         try {
             responseBody = client.post(apiUrl, "application/json; charset=UTF-8", requestBody, null);

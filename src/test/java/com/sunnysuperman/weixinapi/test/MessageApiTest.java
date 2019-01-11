@@ -36,12 +36,12 @@ public class MessageApiTest extends BaseTest {
 
     public void test_sendCustomMessageArticle() throws Exception {
         SendCustomMessageRequest request = new SendCustomMessageRequest();
-        request.setTouser("xx");
+        request.setTouser("oyNtA0q0JFPiX9mflFweW8nwIvJs");
         ArticleMessage article = new ArticleMessage();
         article.setTitle("推送标题");
         article.setDescription("推送简介");
         article.setUrl("http://www.baidu.com/");
-        article.setPicurl("https://xx.png");
+        article.setPicurl("http://sandbox-c2.wakkaa.com/wks/100045/2019/1/5/v/5c30534ccfab57451ca82a58.jpeg");
         request.setArticles(new ArticleMessage[] { article });
         try {
             SendMessageResponse response = api.sendCustomMessage(request);
