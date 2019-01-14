@@ -67,10 +67,6 @@ public class MiniApiTest extends BaseTest {
         System.out.println(JSONUtil.toJSONString(api.getLatestAuditStatus()));
     }
 
-    public void test_publishQrcodeJump() throws Exception {
-        api.publishQrcodeJump("https://f1.wakkaa.com/assets/mini/");
-    }
-
     public void test_release() throws Exception {
         api.release();
     }

@@ -11,6 +11,9 @@ public class RefundRequest extends PayApiRequest {
     private int total_fee;
     private int refund_fee;
     private String refund_fee_type;
+    private String refund_desc;
+    private String refund_account;
+    private String notify_url;
     private String op_user_id;
 
     public String getAppid() {
@@ -67,6 +70,30 @@ public class RefundRequest extends PayApiRequest {
 
     public void setRefund_fee_type(String refund_fee_type) {
         this.refund_fee_type = refund_fee_type;
+    }
+
+    public String getRefund_desc() {
+        return refund_desc;
+    }
+
+    public void setRefund_desc(String refund_desc) {
+        this.refund_desc = refund_desc;
+    }
+
+    public String getRefund_account() {
+        return refund_account;
+    }
+
+    public void setRefund_account(String refund_account) {
+        this.refund_account = refund_account;
+    }
+
+    public String getNotify_url() {
+        return notify_url;
+    }
+
+    public void setNotify_url(String notify_url) {
+        this.notify_url = notify_url;
     }
 
     public String getOp_user_id() {

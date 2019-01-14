@@ -8,6 +8,8 @@ import com.sunnysuperman.commons.util.JSONUtil;
 import com.sunnysuperman.weixinapi.merchant.WeixinMerchantApi;
 import com.sunnysuperman.weixinapi.merchant.protocol.QueryOrderRequest;
 import com.sunnysuperman.weixinapi.merchant.protocol.QueryOrderResponse;
+import com.sunnysuperman.weixinapi.merchant.protocol.RefundRequest;
+import com.sunnysuperman.weixinapi.merchant.protocol.RefundResponse;
 import com.sunnysuperman.weixinapi.merchant.protocol.SendRedpackRequest;
 import com.sunnysuperman.weixinapi.merchant.protocol.SendRedpackResponse;
 import com.sunnysuperman.weixinapi.merchant.protocol.UnifiedOrderRequest;
@@ -63,6 +65,19 @@ public class MerchantApiTest extends BaseTest {
         req.setTrade_type("MWEB");
         req.setTime_expire(expireAsString);
         UnifiedOrderResponse response = api.unifiedorder(req);
+        System.out.println(JSONUtil.toJSONString(response));
+    }
+
+    public void test_refund() throws Exception {
+        RefundRequest req = new RefundRequest();
+        req.setAppid(getString("merchant.appid"));
+        req.setOut_refund_no("");
+        req.setOut_trade_no("");
+        req.setTotal_fee(1);
+        req.setRefund_fee(1);
+        req.setOp_user_id("system");
+        req.setRefund_desc("卖完了");
+        RefundResponse response = api.refund(req);
         System.out.println(JSONUtil.toJSONString(response));
     }
 
