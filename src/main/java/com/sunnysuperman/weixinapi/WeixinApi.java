@@ -1,6 +1,8 @@
 package com.sunnysuperman.weixinapi;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +16,13 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.FormatUtil;
 import com.sunnysuperman.commons.util.JSONUtil;
+import com.sunnysuperman.commons.util.StringUtil;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.util.WeixinHttpClient;
 import com.sunnysuperman.weixinapi.util.WeixinJSONHelper;
 
 public class WeixinApi {
-    private static final Logger LOG = LoggerFactory.getLogger(WeixinApi.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(WeixinApi.class);
     protected WeixinApp app;
 
     public WeixinApi(WeixinApp app) {
@@ -88,8 +91,34 @@ public class WeixinApi {
         return replace;
     }
 
+    protected String wrapApiUrl(String api, Map<String, Object> params) {
+        StringBuilder buf = new StringBuilder("https://api.weixin.qq.com/").append(api);
+        if (params == null || params.isEmpty()) {
+            return buf.toString();
+        }
+        boolean appendQuestionMark = api.indexOf('?') < 0;
+        for (Entry<String, Object> entry : params.entrySet()) {
+            if (appendQuestionMark) {
+                buf.append('?');
+                appendQuestionMark = false;
+            } else {
+                buf.append('&');
+            }
+            try {
+                Object value = entry.getValue();
+                buf.append(entry.getKey()).append('=');
+                if (value != null) {
+                    buf.append(URLEncoder.encode(value.toString(), StringUtil.UTF8));
+                }
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return buf.toString();
+    }
+
     protected String wrapApiUrl(String api) {
-        return "https://api.weixin.qq.com/" + api;
+        return wrapApiUrl(api, null);
     }
 
     protected <T> T request(boolean get, String api, Map<String, Object> params, T bean, boolean camelizeJSON)
@@ -143,5 +172,18 @@ public class WeixinApi {
 
     protected <T> T postJSON(String api, Object params, T bean) throws WeixinApiException {
         return postJSON(api, params, bean, false);
+    }
+
+    protected <T> T postFormData(String api, Map<String, Object> data, T bean, boolean camelizeJSON)
+            throws WeixinApiException {
+        WeixinHttpClient client = new WeixinHttpClient();
+        String apiUrl = wrapApiUrl(api);
+        String responseBody;
+        try {
+            responseBody = client.postFormData(apiUrl, data);
+        } catch (IOException e) {
+            throw wrapIOException(e);
+        }
+        return parseResult(apiUrl, responseBody, bean, camelizeJSON);
     }
 }

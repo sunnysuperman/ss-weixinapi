@@ -1,5 +1,6 @@
 package com.sunnysuperman.weixinapi.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -11,6 +12,7 @@ import com.sunnysuperman.commons.util.StringUtil;
 
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -123,4 +125,53 @@ public class WeixinHttpClient {
         return execute(request);
     }
 
+    public static class UploadFile {
+        private File file;
+        private String fileName;
+        private String contentType;
+
+        public File getFile() {
+            return file;
+        }
+
+        public void setFile(File file) {
+            this.file = file;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+    }
+
+    public String postFormData(String url, Map<String, Object> data) throws IOException {
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (Entry<String, Object> entry : data.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof UploadFile) {
+                UploadFile file = (UploadFile) value;
+                String fileName = file.getFileName() != null ? file.getFileName() : file.getFile().getName();
+                String contentType = file.getContentType() != null ? file.getContentType() : "application/octet-stream";
+                RequestBody body = RequestBody.create(MediaType.parse(contentType), file.getFile());
+                requestBody.addFormDataPart(entry.getKey(), fileName, body);
+            } else {
+                requestBody.addFormDataPart(key, value.toString());
+            }
+        }
+        Request request = new Request.Builder().url(url).post(requestBody.build()).build();
+        return execute(request);
+    }
 }

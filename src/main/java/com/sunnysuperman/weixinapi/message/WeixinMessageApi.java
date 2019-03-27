@@ -87,6 +87,9 @@ public class WeixinMessageApi extends TokenAwareWeixinApi {
         } else if (request.getArticles() != null) {
             params.put("msgtype", "news");
             params.put("news", Collections.singletonMap("articles", request.getArticles()));
+        } else if (request.getMpNewsId() != null) {
+            params.put("msgtype", "mpnews");
+            params.put("mpnews", Collections.singletonMap("media_id", request.getMpNewsId()));
         } else {
             throw new IllegalArgumentException("Bad message type");
         }

@@ -87,6 +87,7 @@ public class SendCustomMessageRequest {
     private String voice;
     private VideoMessage video;
     private ArticleMessage[] articles;
+    private String mpNewsId;
 
     public String getTouser() {
         return touser;
@@ -134,6 +135,14 @@ public class SendCustomMessageRequest {
 
     public void setArticles(ArticleMessage[] articles) {
         this.articles = articles;
+    }
+
+    public String getMpNewsId() {
+        return mpNewsId;
+    }
+
+    public void setMpNewsId(String mpNewsId) {
+        this.mpNewsId = mpNewsId;
     }
 
 }
