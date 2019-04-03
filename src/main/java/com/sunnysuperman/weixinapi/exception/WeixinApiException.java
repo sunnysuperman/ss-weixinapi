@@ -7,13 +7,13 @@ public class WeixinApiException extends Exception {
     private String errorMsg;
 
     public WeixinApiException(int errorCode, String errorMsg) {
-        super();
+        super(errorMsg);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
 
     public WeixinApiException(Throwable cause, int errorCode, String errorMsg) {
-        super(cause);
+        super(errorMsg, cause);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
