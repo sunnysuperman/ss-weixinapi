@@ -2,9 +2,9 @@ package com.sunnysuperman.weixinapi.mini;
 
 import com.sunnysuperman.weixinapi.BaseResponse;
 
-public class AuditResponse extends BaseResponse {
+public class GetAuditStatusResponse extends BaseResponse {
     private String auditid;
-    private int status;
+    private byte status;
     private String reason;
 
     public String getAuditid() {
@@ -15,11 +15,11 @@ public class AuditResponse extends BaseResponse {
         this.auditid = auditid;
     }
 
-    public int getStatus() {
+    public byte getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(byte status) {
         this.status = status;
     }
 

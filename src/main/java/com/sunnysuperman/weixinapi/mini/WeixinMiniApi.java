@@ -103,7 +103,10 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         }
     }
 
-    public void commit(String templateId, String extJson, String version, String desc) throws WeixinApiException {
+    /**
+     * 为授权的小程序帐号上传小程序代码
+     */
+    public void commit(Integer templateId, String extJson, String version, String desc) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("template_id", templateId);
         params.put("ext_json", extJson);
@@ -112,45 +115,75 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         postJSON("wxa/commit?access_token=" + getTokenGetter().getAccessToken(), params, new BaseResponse());
     }
 
-    public String getQrcode(String path) throws WeixinApiException {
+    /**
+     * 获取体验小程序的体验二维码URL
+     */
+    public String getReleaseQrcode(String path) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
-        params.put("path", path);
+        if (path != null) {
+            params.put("path", path);
+        }
         return wrapApiUrl("wxa/get_qrcode?access_token=" + getTokenGetter().getAccessToken());
     }
 
-    public SubmitResponse submit(List<MiniSubmitItem> items) throws WeixinApiException {
+    /**
+     * 提交审核
+     */
+    public SubmitResponse submitAudit(List<MiniSubmitItem> items) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("item_list", items);
         return postJSON("wxa/submit_audit?access_token=" + getTokenGetter().getAccessToken(), params,
                 new SubmitResponse());
     }
 
-    public AuditResponse getAuditStatus(String auditId) throws WeixinApiException {
+    /**
+     * 查询某个提交的审核状态
+     */
+    public GetAuditStatusResponse getAuditStatus(String auditId) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("auditid", auditId);
         return postJSON("wxa/get_auditstatus?access_token=" + getTokenGetter().getAccessToken(), params,
-                new AuditResponse());
+                new GetAuditStatusResponse());
     }
 
-    public AuditResponse getLatestAuditStatus() throws WeixinApiException {
+    /**
+     * 查询最后一次提交的审核状态
+     */
+    public GetAuditStatusResponse getLatestAuditStatus() throws WeixinApiException {
         return get("wxa/get_latest_auditstatus?access_token=" + getTokenGetter().getAccessToken(), null,
-                new AuditResponse());
+                new GetAuditStatusResponse());
     }
 
-    public void publishQrcodeJump(String prefix) throws WeixinApiException {
-        Map<String, Object> params = new HashMap<>();
-        params.put("prefix", prefix);
-        post("cgi-bin/wxopen/qrcodejumppublish?access_token=" + getTokenGetter().getAccessToken(), params,
-                new BaseResponse());
-    }
-
+    /**
+     * 发布已通过审核的小程序
+     */
     public void release() throws WeixinApiException {
         postJSON("wxa/release?access_token=" + getTokenGetter().getAccessToken(), Collections.emptyMap(),
                 new BaseResponse());
     }
 
+    /**
+     * 小程序审核撤回
+     */
     public void undoAudit() throws WeixinApiException {
         get("wxa/undocodeaudit?access_token=" + getTokenGetter().getAccessToken(), null, new BaseResponse());
+    }
+
+    /**
+     * 小程序版本回退
+     */
+    public void revertRelease() throws WeixinApiException {
+        get("wxa/revertcoderelease?access_token=" + getTokenGetter().getAccessToken(), null, new BaseResponse());
+    }
+
+    /**
+     * 发布已设置的二维码规则
+     */
+    public void publishQrcodeJump(String prefix) throws WeixinApiException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("prefix", prefix);
+        post("cgi-bin/wxopen/qrcodejumppublish?access_token=" + getTokenGetter().getAccessToken(), params,
+                new BaseResponse());
     }
 
 }

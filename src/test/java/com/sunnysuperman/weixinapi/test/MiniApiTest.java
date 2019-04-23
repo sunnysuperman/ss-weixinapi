@@ -47,16 +47,16 @@ public class MiniApiTest extends BaseTest {
     }
 
     public void test_commit() throws Exception {
-        api.commit("4", "{}", "V1.0.5", "APP名称");
+        api.commit(5, "{}", "V1.0.5", "APP名称");
     }
 
     @SuppressWarnings("unchecked")
     public void test_submit() throws Exception {
-        api.submit((List<MiniSubmitItem>) JSONUtil.parseJSONArray(getString("mini.submit-items")));
+        api.submitAudit((List<MiniSubmitItem>) JSONUtil.parseJSONArray(getString("mini.submit-items")));
     }
 
     public void test_getQrcode() throws Exception {
-        System.out.println(api.getQrcode(null));
+        System.out.println(api.getReleaseQrcode(null));
     }
 
     public void test_getAuditStatus() throws Exception {

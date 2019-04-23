@@ -24,16 +24,16 @@ public class WeixinQrcodeApi extends TokenAwareWeixinApi {
         String actionName;
         if (useStrId) {
             if (forever) {
-                actionName = "QR_LIMIT_SCENE";
+                actionName = "QR_LIMIT_STR_SCENE";
             } else {
-                actionName = "QR_SCENE";
+                actionName = "QR_STR_SCENE";
             }
             scene.put("scene_str", strId);
         } else {
             if (forever) {
-                actionName = "QR_LIMIT_STR_SCENE";
+                actionName = "QR_LIMIT_SCENE";
             } else {
-                actionName = "QR_STR_SCENE";
+                actionName = "QR_SCENE";
             }
             scene.put("scene_id", id);
         }
