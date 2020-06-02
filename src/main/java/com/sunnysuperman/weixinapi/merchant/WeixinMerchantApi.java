@@ -132,14 +132,17 @@ public class WeixinMerchantApi {
         RequestBody requesBody = RequestBody.create(contentType, requestAsXml);
         Request req = new Request.Builder().url(url).post(requesBody).build();
         String responseAsXml;
+        Response res = null;
         try {
-            Response res = httpClient.newCall(req).execute();
+            res = httpClient.newCall(req).execute();
             if (!res.isSuccessful()) {
                 throw new WeixinMerchantException("[WeixinMerchantApi] network error: " + url);
             }
             responseAsXml = res.body().string();
         } catch (IOException e) {
             throw new WeixinMerchantException("[WeixinMerchantApi] network error: " + url);
+        } finally {
+            FileUtil.close(res);
         }
         if (LOG.isInfoEnabled()) {
             LOG.info("[WeixinMerchantApi] Call <" + url + ">, Request <" + requestAsXml + "> Response: "

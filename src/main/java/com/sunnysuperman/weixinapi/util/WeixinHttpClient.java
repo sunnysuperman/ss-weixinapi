@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import com.sunnysuperman.commons.util.FileUtil;
 import com.sunnysuperman.commons.util.StringUtil;
 
 import okhttp3.FormBody;
@@ -79,9 +80,14 @@ public class WeixinHttpClient {
     }
 
     private String execute(Request request) throws IOException {
-        Response response = getClient().newCall(request).execute();
-        responseCode = response.code();
-        return response.body().string();
+        Response response = null;
+        try {
+            response = getClient().newCall(request).execute();
+            responseCode = response.code();
+            return response.body().string();
+        } finally {
+            FileUtil.close(response);
+        }
     }
 
     private Request.Builder requestBuilder(String url, Map<String, Object> params, Map<String, Object> headers) {
