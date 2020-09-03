@@ -1,4 +1,4 @@
-package com.sunnysuperman.weixinapi.prototype;
+package com.sunnysuperman.weixinapi.crypto;
 
 @SuppressWarnings("serial")
 public class AesException extends Exception {

@@ -13,8 +13,8 @@ import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.WeixinAppType;
+import com.sunnysuperman.weixinapi.crypto.PKCS7Encoder;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
-import com.sunnysuperman.weixinapi.prototype.PKCS7Encoder;
 import com.sunnysuperman.weixinapi.util.DigestUtils;
 
 public class WeixinMiniApi extends TokenAwareWeixinApi {

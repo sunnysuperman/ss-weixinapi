@@ -9,8 +9,8 @@ import com.sunnysuperman.commons.util.StringUtil;
 import com.sunnysuperman.weixinapi.WeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppType;
+import com.sunnysuperman.weixinapi.crypto.WXBizMsgCrypt;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
-import com.sunnysuperman.weixinapi.prototype.WXBizMsgCrypt;
 import com.sunnysuperman.weixinapi.util.XMLParser;
 
 public class WeixinComponentApi extends WeixinApi {
