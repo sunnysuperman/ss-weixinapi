@@ -1,12 +1,10 @@
 package com.sunnysuperman.weixinapi.mini;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.StringUtil;
@@ -17,6 +15,7 @@ import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.WeixinAppType;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.prototype.PKCS7Encoder;
+import com.sunnysuperman.weixinapi.util.DigestUtils;
 
 public class WeixinMiniApi extends TokenAwareWeixinApi {
 
@@ -61,8 +60,8 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         }
         byte[] contentBytes;
         try {
-            contentBytes = MiniAesUtil.decrypt(Base64.decodeBase64(encryptedData), Base64.decodeBase64(sessionKey),
-                    Base64.decodeBase64(iv));
+            contentBytes = MiniAesUtil.decrypt(Base64.getDecoder().decode(encryptedData),
+                    Base64.getDecoder().decode(sessionKey), Base64.getDecoder().decode(iv));
         } catch (Exception e) {
             throw new WeixinApiException(e, -1, "Failed to decode encrypted data");
         }
