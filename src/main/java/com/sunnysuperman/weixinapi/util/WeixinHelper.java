@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import com.sunnysuperman.commons.util.StringUtil;
 
+// TODO XXX move to DigestUtils
 public class WeixinHelper {
     private static final String ALPHA_NUMERIC = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

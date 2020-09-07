@@ -199,7 +199,7 @@ public class WeixinMerchantApi {
         return SUCCESS_XML;
     }
 
-    public static PayNotifyResponse parsePayNotifyResponse(String responseAsXml, WeixinMerchantApiFactory apiFactory)
+    public static PayNotifyResponse parsePayNotifyResponse(String responseAsXml, WeixinMerchantFinder merchantFinder)
             throws WeixinMerchantException {
         Map<String, Object> responseAsMap;
         try {
@@ -211,8 +211,8 @@ public class WeixinMerchantApi {
         if (!notify.rawSuccess()) {
             throw new WeixinMerchantException("[WeixinMerchantApi] Bad response: " + responseAsXml);
         }
-        WeixinMerchantApi api = apiFactory.createByAppId(notify.getAppid());
-        boolean ok = WeixinSignature.checkSign(responseAsMap, api.getKey());
+        String key = merchantFinder.findMerchantKey(notify.getAppid(), notify.getMch_id());
+        boolean ok = WeixinSignature.checkSign(responseAsMap, key);
         if (!ok) {
             throw new WeixinMerchantException("[WeixinMerchantApi] Bad signature: " + responseAsXml);
         }
