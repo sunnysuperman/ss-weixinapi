@@ -9,6 +9,7 @@ import java.util.Map;
 import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.StringUtil;
 import com.sunnysuperman.weixinapi.BaseResponse;
+import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
@@ -19,15 +20,19 @@ import com.sunnysuperman.weixinapi.util.DigestUtils;
 
 public class WeixinMiniApi extends TokenAwareWeixinApi {
 
-    public WeixinMiniApi(WeixinApp app, WeixinAppTokenGetter tokenGetter) {
-        super(app, tokenGetter);
+    public WeixinMiniApi(WeixinApp app, HttpClientFactory httpClientFactory, WeixinAppTokenGetter tokenGetter) {
+        super(app, httpClientFactory, tokenGetter);
         if (app.getAppType() != WeixinAppType.mini) {
             throw new RuntimeException("Not a miniprogram weixin app");
         }
     }
 
+    public WeixinMiniApi(WeixinApp app, WeixinAppTokenGetter tokenGetter) {
+        this(app, null, tokenGetter);
+    }
+
     public WeixinMiniApi(WeixinApp app) {
-        this(app, null);
+        this(app, null, null);
     }
 
     public GetMiniSessionResponse getSession(String code, String componentAppId, String componentAccessToken)
@@ -76,14 +81,13 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         params.put("wsrequestdomain", domains.getWsrequestdomain());
         params.put("uploaddomain", domains.getUploaddomain());
         params.put("downloaddomain", domains.getDownloaddomain());
-        postJSON("wxa/modify_domain?access_token=" + getTokenGetter().getAccessToken(), params, new BaseResponse());
+        postJSON("wxa/modify_domain?access_token=" + ensureAccessToken(), params, new BaseResponse());
     }
 
     public MiniServerDomains getDomains() throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("action", "get");
-        return postJSON("wxa/modify_domain?access_token=" + getTokenGetter().getAccessToken(), params,
-                new MiniServerDomains());
+        return postJSON("wxa/modify_domain?access_token=" + ensureAccessToken(), params, new MiniServerDomains());
     }
 
     public void setWebviewDomains(String[] domains) throws WeixinApiException {
@@ -91,8 +95,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         params.put("action", "set");
         params.put("webviewdomain", domains);
         try {
-            postJSON("wxa/setwebviewdomain?access_token=" + getTokenGetter().getAccessToken(), params,
-                    new BaseResponse());
+            postJSON("wxa/setwebviewdomain?access_token=" + ensureAccessToken(), params, new BaseResponse());
         } catch (WeixinApiException e) {
             if (e.getErrorCode() == 89019) {
                 // 业务域名无更改，无需重复设置
@@ -111,7 +114,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         params.put("ext_json", extJson);
         params.put("user_version", version);
         params.put("user_desc", desc);
-        postJSON("wxa/commit?access_token=" + getTokenGetter().getAccessToken(), params, new BaseResponse());
+        postJSON("wxa/commit?access_token=" + ensureAccessToken(), params, new BaseResponse());
     }
 
     /**
@@ -122,7 +125,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         if (path != null) {
             params.put("path", path);
         }
-        return wrapApiUrl("wxa/get_qrcode?access_token=" + getTokenGetter().getAccessToken());
+        return wrapApiUrl("wxa/get_qrcode?access_token=" + ensureAccessToken());
     }
 
     /**
@@ -131,8 +134,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
     public SubmitResponse submitAudit(List<MiniSubmitItem> items) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("item_list", items);
-        return postJSON("wxa/submit_audit?access_token=" + getTokenGetter().getAccessToken(), params,
-                new SubmitResponse());
+        return postJSON("wxa/submit_audit?access_token=" + ensureAccessToken(), params, new SubmitResponse());
     }
 
     /**
@@ -141,7 +143,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
     public GetAuditStatusResponse getAuditStatus(String auditId) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("auditid", auditId);
-        return postJSON("wxa/get_auditstatus?access_token=" + getTokenGetter().getAccessToken(), params,
+        return postJSON("wxa/get_auditstatus?access_token=" + ensureAccessToken(), params,
                 new GetAuditStatusResponse());
     }
 
@@ -149,7 +151,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
      * 查询最后一次提交的审核状态
      */
     public GetAuditStatusResponse getLatestAuditStatus() throws WeixinApiException {
-        return get("wxa/get_latest_auditstatus?access_token=" + getTokenGetter().getAccessToken(), null,
+        return get("wxa/get_latest_auditstatus?access_token=" + ensureAccessToken(), null,
                 new GetAuditStatusResponse());
     }
 
@@ -157,22 +159,21 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
      * 发布已通过审核的小程序
      */
     public void release() throws WeixinApiException {
-        postJSON("wxa/release?access_token=" + getTokenGetter().getAccessToken(), Collections.emptyMap(),
-                new BaseResponse());
+        postJSON("wxa/release?access_token=" + ensureAccessToken(), Collections.emptyMap(), new BaseResponse());
     }
 
     /**
      * 小程序审核撤回
      */
     public void undoAudit() throws WeixinApiException {
-        get("wxa/undocodeaudit?access_token=" + getTokenGetter().getAccessToken(), null, new BaseResponse());
+        get("wxa/undocodeaudit?access_token=" + ensureAccessToken(), null, new BaseResponse());
     }
 
     /**
      * 小程序版本回退
      */
     public void revertRelease() throws WeixinApiException {
-        get("wxa/revertcoderelease?access_token=" + getTokenGetter().getAccessToken(), null, new BaseResponse());
+        get("wxa/revertcoderelease?access_token=" + ensureAccessToken(), null, new BaseResponse());
     }
 
     /**
@@ -181,8 +182,7 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
     public void publishQrcodeJump(String prefix) throws WeixinApiException {
         Map<String, Object> params = new HashMap<>();
         params.put("prefix", prefix);
-        post("cgi-bin/wxopen/qrcodejumppublish?access_token=" + getTokenGetter().getAccessToken(), params,
-                new BaseResponse());
+        post("cgi-bin/wxopen/qrcodejumppublish?access_token=" + ensureAccessToken(), params, new BaseResponse());
     }
 
 }

@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sunnysuperman</groupId>
 	<artifactId>ss-weixinapi</artifactId>
-	<version>0.6.2</version>
+	<version>0.7</version>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 
@@ -42,13 +43,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sunnysuperman</groupId>
-			<artifactId>ss-commons</artifactId>
-			<version>0.2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>3.9.1</version>
+			<artifactId>ss-http</artifactId>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>

@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.sunnysuperman.commons.util.FileUtil;
 import com.sunnysuperman.commons.util.StringUtil;
+import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
@@ -24,6 +25,10 @@ public class WeixinMediaApi extends TokenAwareWeixinApi {
 
     public WeixinMediaApi(WeixinApp app, WeixinAppTokenGetter tokenGetter) {
         super(app, tokenGetter);
+    }
+
+    public WeixinMediaApi(WeixinApp app, HttpClientFactory httpClientFactory, WeixinAppTokenGetter tokenGetter) {
+        super(app, httpClientFactory, tokenGetter);
     }
 
     @Override
@@ -66,12 +71,10 @@ public class WeixinMediaApi extends TokenAwareWeixinApi {
     }
 
     public boolean download(String mediaId, OutputStream out, int timeoutInSecond) throws Exception {
-        String token = getTokenGetter().getAccessToken();
-        if (token == null) {
-            return false;
-        }
+        String accessToken = ensureAccessToken();
+
         Map<String, Object> params = new HashMap<>();
-        params.put("access_token", token);
+        params.put("access_token", accessToken);
         params.put("media_id", mediaId);
         Request request = getRequestBuilder("http://file.api.weixin.qq.com/cgi-bin/media/get", params, null);
         OkHttpClient client = new OkHttpClient.Builder().connectTimeout(15, TimeUnit.SECONDS)

@@ -44,6 +44,7 @@ import com.sunnysuperman.weixinapi.merchant.protocol.UnifiedOrderResponse;
 import com.sunnysuperman.weixinapi.util.WeixinSignature;
 import com.sunnysuperman.weixinapi.util.XMLParser;
 
+import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -106,7 +107,8 @@ public class WeixinMerchantApi {
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
             OkHttpClient httpClient = new OkHttpClient.Builder().sslSocketFactory(sslSocketFactory, trustManager)
-                    .connectTimeout(10, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).build();
+                    .connectionPool(new ConnectionPool(0, 1, TimeUnit.SECONDS)).connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(20, TimeUnit.SECONDS).build();
             return httpClient;
         } catch (Exception e) {
             throw new RuntimeException(

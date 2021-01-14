@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sunnysuperman.commons.util.StringUtil;
+import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.WeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppType;
@@ -14,11 +15,22 @@ import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.util.XMLParser;
 
 public class WeixinComponentApi extends WeixinApi {
-    public WeixinComponentApi(WeixinApp app) {
-        super(app);
+
+    public WeixinComponentApi(WeixinApp app, HttpClientFactory httpClientFactory) {
+        super(app, httpClientFactory);
         if (app.getAppType() != WeixinAppType.comp) {
             throw new RuntimeException("Not a component weixin app");
         }
+    }
+
+    public WeixinComponentApi(WeixinApp app) {
+        this(app, null);
+    }
+
+    public static boolean isTokenError(int errcode) {
+        // see
+        // https://developers.weixin.qq.com/doc/offiaccount/Getting_Started/Global_Return_Code.html
+        return errcode == 40001 || errcode == 42001;
     }
 
     public Map<String, Object> decryptMessage(String postData, String signature, String timestamp, String nonce) {

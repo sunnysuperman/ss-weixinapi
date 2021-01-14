@@ -17,17 +17,24 @@ import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.FormatUtil;
 import com.sunnysuperman.commons.util.JSONUtil;
 import com.sunnysuperman.commons.util.StringUtil;
+import com.sunnysuperman.http.client.HttpTextResult;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
-import com.sunnysuperman.weixinapi.util.WeixinHttpClient;
+import com.sunnysuperman.weixinapi.exception.WeixinNetworkException;
 import com.sunnysuperman.weixinapi.util.WeixinJSONHelper;
 
 public class WeixinApi {
     protected static final Logger LOG = LoggerFactory.getLogger(WeixinApi.class);
     protected WeixinApp app;
+    protected HttpClientFactory httpClientFactory;
 
-    public WeixinApi(WeixinApp app) {
+    public WeixinApi(WeixinApp app, HttpClientFactory httpClientFactory) {
         super();
         this.app = app;
+        this.httpClientFactory = httpClientFactory != null ? httpClientFactory : DefaultHttpClientFactory.getInstance();
+    }
+
+    public WeixinApi(WeixinApp app) {
+        this(app, null);
     }
 
     public WeixinApp getApp() {
@@ -35,7 +42,7 @@ public class WeixinApi {
     }
 
     protected WeixinApiException wrapIOException(IOException e) throws WeixinApiException {
-        return new WeixinApiException(e, -1, "Failed to call weixin api");
+        return new WeixinNetworkException(e);
     }
 
     protected <T> T parseResult(String apiUrl, String responseBody, T bean, boolean camelizeJSON)
@@ -45,7 +52,7 @@ public class WeixinApi {
         }
         Map<String, Object> result = JSONUtil.parseJSONObject(responseBody);
         if (result == null) {
-            throw new WeixinApiException(-1, "Failed to parse weixin api result: " + responseBody);
+            throw new WeixinNetworkException("Failed to parse weixin api result: " + responseBody);
         }
         Integer errcode = FormatUtil.parseInteger(result.get("errcode"));
         if (errcode != null && errcode != 0) {
@@ -123,19 +130,21 @@ public class WeixinApi {
 
     protected <T> T request(boolean get, String api, Map<String, Object> params, T bean, boolean camelizeJSON)
             throws WeixinApiException {
-        WeixinHttpClient client = new WeixinHttpClient();
         String apiUrl = wrapApiUrl(api);
-        String responseBody;
+        HttpTextResult result;
         try {
             if (get) {
-                responseBody = client.get(apiUrl, params, null);
+                result = httpClientFactory.getHttpClient().get(apiUrl, params, null);
             } else {
-                responseBody = client.post(apiUrl, params, null);
+                result = httpClientFactory.getHttpClient().post(apiUrl, params, null);
             }
         } catch (IOException e) {
             throw wrapIOException(e);
         }
-        return parseResult(apiUrl, responseBody, bean, camelizeJSON);
+        if (!result.ok()) {
+            throw new WeixinNetworkException("response http-code: " + result.getCode());
+        }
+        return parseResult(apiUrl, result.getBody(), bean, camelizeJSON);
     }
 
     protected <T> T get(String api, Map<String, Object> params, T bean, boolean camelizeJSON)
@@ -157,33 +166,37 @@ public class WeixinApi {
     }
 
     protected <T> T postJSON(String api, Object params, T bean, boolean camelizeJSON) throws WeixinApiException {
-        WeixinHttpClient client = new WeixinHttpClient();
         String apiUrl = wrapApiUrl(api);
         String requestBody = params == null ? null
                 : JSONUtil.toJSONString(params, null, SerializerFeature.DisableCircularReferenceDetect);
-        String responseBody;
+        HttpTextResult result;
         try {
-            responseBody = client.post(apiUrl, "application/json; charset=UTF-8", requestBody, null);
+            result = httpClientFactory.getHttpClient().postJSON(apiUrl, requestBody, null);
         } catch (IOException e) {
             throw wrapIOException(e);
         }
-        return parseResult(apiUrl, responseBody, bean, camelizeJSON);
+        if (!result.ok()) {
+            throw new WeixinNetworkException("response http-code: " + result.getCode());
+        }
+        return parseResult(apiUrl, result.getBody(), bean, camelizeJSON);
     }
 
     protected <T> T postJSON(String api, Object params, T bean) throws WeixinApiException {
         return postJSON(api, params, bean, false);
     }
 
-    protected <T> T postFormData(String api, Map<String, Object> data, T bean, boolean camelizeJSON)
+    protected <T> T postMultipart(String api, Map<String, Object> data, T bean, boolean camelizeJSON)
             throws WeixinApiException {
-        WeixinHttpClient client = new WeixinHttpClient();
         String apiUrl = wrapApiUrl(api);
-        String responseBody;
+        HttpTextResult result;
         try {
-            responseBody = client.postFormData(apiUrl, data);
+            result = httpClientFactory.getHttpClient().postMultipart(apiUrl, data, null);
         } catch (IOException e) {
             throw wrapIOException(e);
         }
-        return parseResult(apiUrl, responseBody, bean, camelizeJSON);
+        if (!result.ok()) {
+            throw new WeixinNetworkException("response http-code: " + result.getCode());
+        }
+        return parseResult(apiUrl, result.getBody(), bean, camelizeJSON);
     }
 }

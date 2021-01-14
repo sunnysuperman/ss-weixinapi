@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
@@ -11,11 +12,17 @@ import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 
 public class WeixinQrcodeApi extends TokenAwareWeixinApi {
 
+    public WeixinQrcodeApi(WeixinApp app, HttpClientFactory httpClientFactory, WeixinAppTokenGetter tokenGetter) {
+        super(app, httpClientFactory, tokenGetter);
+    }
+
     public WeixinQrcodeApi(WeixinApp app, WeixinAppTokenGetter tokenGetter) {
         super(app, tokenGetter);
     }
 
     public WeixinQrCode create(boolean forever, Integer id, String strId, int expireIn) throws WeixinApiException {
+        String accessToken = ensureAccessToken();
+
         if (expireIn <= 0) {
             expireIn = 2592000;
         }
@@ -41,8 +48,7 @@ public class WeixinQrcodeApi extends TokenAwareWeixinApi {
         params.put("expire_seconds", expireIn);
         params.put("action_name", actionName);
         params.put("action_info", Collections.singletonMap("scene", scene));
-        return postJSON("cgi-bin/qrcode/create?access_token=" + getTokenGetter().getAccessToken(), params,
-                new WeixinQrCode());
+        return postJSON("cgi-bin/qrcode/create?access_token=" + accessToken, params, new WeixinQrCode());
     }
 
 }

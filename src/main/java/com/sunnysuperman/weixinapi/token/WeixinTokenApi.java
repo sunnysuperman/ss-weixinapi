@@ -4,11 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sunnysuperman.weixinapi.BaseResponse;
+import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.WeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 
 public class WeixinTokenApi extends WeixinApi {
+
+    public WeixinTokenApi(WeixinApp app, HttpClientFactory httpClientFactory) {
+        super(app, httpClientFactory);
+    }
 
     public WeixinTokenApi(WeixinApp app) {
         super(app);

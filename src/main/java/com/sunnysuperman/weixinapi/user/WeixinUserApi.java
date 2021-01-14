@@ -6,12 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sunnysuperman.commons.util.StringUtil;
+import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 
 public class WeixinUserApi extends TokenAwareWeixinApi {
+
+    public WeixinUserApi(WeixinApp app, HttpClientFactory httpClientFactory, WeixinAppTokenGetter tokenGetter) {
+        super(app, httpClientFactory, tokenGetter);
+    }
 
     public WeixinUserApi(WeixinApp app, WeixinAppTokenGetter tokenGetter) {
         super(app, tokenGetter);
@@ -83,10 +88,8 @@ public class WeixinUserApi extends TokenAwareWeixinApi {
     }
 
     public GetUserInfoResponse findUserInfoByGlobalAccessToken(String openid) throws WeixinApiException {
-        String accessToken = tokenGetter == null ? null : tokenGetter.getAccessToken();
-        if (accessToken == null) {
-            return null;
-        }
+        String accessToken = ensureAccessToken();
+
         Map<String, Object> params = new HashMap<>();
         params.put("openid", openid);
         params.put("access_token", accessToken);
@@ -109,10 +112,8 @@ public class WeixinUserApi extends TokenAwareWeixinApi {
     }
 
     public GetUsersResponse getUsers(String nextOpenid) throws WeixinApiException {
-        String accessToken = tokenGetter == null ? null : tokenGetter.getAccessToken();
-        if (accessToken == null) {
-            return null;
-        }
+        String accessToken = ensureAccessToken();
+
         Map<String, Object> params = new HashMap<>();
         params.put("access_token", accessToken);
         if (nextOpenid != null) {
