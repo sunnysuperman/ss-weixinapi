@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.exception.WeixinNetworkException;
 import com.sunnysuperman.weixinapi.util.WeixinJSONHelper;
 
-public class WeixinApi {
+public abstract class WeixinApi {
     protected static final Logger LOG = LoggerFactory.getLogger(WeixinApi.class);
     protected WeixinApp app;
     protected HttpClientFactory httpClientFactory;
@@ -128,7 +129,7 @@ public class WeixinApi {
         return wrapApiUrl(api, null);
     }
 
-    protected <T> T request(boolean get, String api, Map<String, Object> params, T bean, boolean camelizeJSON)
+    protected <T> T request(boolean get, String api, Map<String, Object> params, T response, boolean camelizeJSON)
             throws WeixinApiException {
         String apiUrl = wrapApiUrl(api);
         HttpTextResult result;
@@ -144,7 +145,7 @@ public class WeixinApi {
         if (!result.ok()) {
             throw new WeixinNetworkException("response http-code: " + result.getCode());
         }
-        return parseResult(apiUrl, result.getBody(), bean, camelizeJSON);
+        return parseResult(apiUrl, result.getBody(), response, camelizeJSON);
     }
 
     protected <T> T get(String api, Map<String, Object> params, T bean, boolean camelizeJSON)
@@ -156,13 +157,17 @@ public class WeixinApi {
         return request(true, api, params, bean, false);
     }
 
-    protected <T> T post(String api, Map<String, Object> params, T bean, boolean camelizeJSON)
+    protected <T> T post(String api, Map<String, Object> params, T response, boolean camelizeJSON)
             throws WeixinApiException {
-        return request(false, api, params, bean, camelizeJSON);
+        return request(false, api, params, response, camelizeJSON);
     }
 
-    protected <T> T post(String api, Map<String, Object> params, T bean) throws WeixinApiException {
-        return request(false, api, params, bean, false);
+    protected <T> T post(String api, Map<String, Object> params, T response) throws WeixinApiException {
+        return request(false, api, params, response, false);
+    }
+
+    protected <T> T post(String api, Object params, T response) throws WeixinApiException {
+        return request(false, api, params == null ? Collections.emptyMap() : Bean.toMap(params), response, false);
     }
 
     protected <T> T postJSON(String api, Object params, T bean, boolean camelizeJSON) throws WeixinApiException {

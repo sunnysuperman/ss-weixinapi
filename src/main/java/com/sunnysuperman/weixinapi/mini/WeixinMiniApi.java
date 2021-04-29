@@ -185,4 +185,11 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
         post("cgi-bin/wxopen/qrcodejumppublish?access_token=" + ensureAccessToken(), params, new BaseResponse());
     }
 
+    /**
+     * 支付后获取用户 Unionid
+     */
+    public String getPaidUnionid(GetPaidUnionidRequest request) throws WeixinApiException {
+        return post("wxa/getpaidunionid?access_token=" + ensureAccessToken(), request, new GetPaidUnionidResponse())
+                .getUnionid();
+    }
 }

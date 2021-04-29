@@ -8,6 +8,7 @@ import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.WeixinAppType;
 import com.sunnysuperman.weixinapi.exception.WeixinBadAccessTokenException;
 import com.sunnysuperman.weixinapi.mini.GetMiniSessionResponse;
+import com.sunnysuperman.weixinapi.mini.GetPaidUnionidRequest;
 import com.sunnysuperman.weixinapi.mini.MiniSubmitItem;
 import com.sunnysuperman.weixinapi.mini.MiniUserInfo;
 import com.sunnysuperman.weixinapi.mini.WeixinMiniApi;
@@ -75,4 +76,11 @@ public class MiniApiTest extends BaseTest {
         api.undoAudit();
     }
 
+    public void test_getPaidUnionid() throws Exception {
+        GetPaidUnionidRequest request = new GetPaidUnionidRequest();
+        request.setTransaction_id("xx");
+        request.setOpenid("xx");
+        String unionid = api.getPaidUnionid(request);
+        System.out.println(unionid);
+    }
 }
