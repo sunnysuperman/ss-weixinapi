@@ -9,16 +9,21 @@ import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
-import com.sunnysuperman.weixinapi.shop.model.AddSpuResponse;
+import com.sunnysuperman.weixinapi.shop.model.SaveSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderResponse;
+import com.sunnysuperman.weixinapi.shop.model.DeleteAuditRequest;
+import com.sunnysuperman.weixinapi.shop.model.DeleteRequest;
+import com.sunnysuperman.weixinapi.shop.model.DelistingRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetAllCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetShopCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuResponse;
+import com.sunnysuperman.weixinapi.shop.model.ListingRequest;
 import com.sunnysuperman.weixinapi.shop.model.PayOrderRequest;
+import com.sunnysuperman.weixinapi.shop.model.UpdateSpuRequest;
 
 public class CustomShopApi extends TokenAwareWeixinApi {
 
@@ -44,8 +49,12 @@ public class CustomShopApi extends TokenAwareWeixinApi {
                 new GetShopCategoryListResponse());
     }
 
-    public AddSpuResponse addSpu(AddSpuRequest request) throws WeixinApiException {
-        return postJSON("shop/spu/add?access_token=" + ensureAccessToken(), request, new AddSpuResponse());
+    public SaveSpuResponse addSpu(AddSpuRequest request) throws WeixinApiException {
+        return postJSON("shop/spu/add?access_token=" + ensureAccessToken(), request, new SaveSpuResponse());
+    }
+
+    public SaveSpuResponse updateSpu(UpdateSpuRequest request) throws WeixinApiException {
+        return postJSON("shop/spu/update?access_token=" + ensureAccessToken(), request, new SaveSpuResponse());
     }
 
     public GetSpuListResponse getSpuList(GetSpuListRequest request) throws WeixinApiException {
@@ -54,6 +63,22 @@ public class CustomShopApi extends TokenAwareWeixinApi {
 
     public GetSpuResponse getSpu(GetSpuRequest request) throws WeixinApiException {
         return postJSON("shop/spu/get?access_token=" + ensureAccessToken(), request, new GetSpuResponse());
+    }
+
+    public void listingSpu(ListingRequest request) throws WeixinApiException {
+        postJSON("shop/spu/listing?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public void delistingSpu(DelistingRequest request) throws WeixinApiException {
+        postJSON("shop/spu/delisting?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public void deleteSpu(DeleteRequest request) throws WeixinApiException {
+        postJSON("shop/spu/del?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public void deleteSpuAudit(DeleteAuditRequest request) throws WeixinApiException {
+        postJSON("shop/spu/del_audit?access_token=" + ensureAccessToken(), request, new BaseResponse());
     }
 
     public CreateOrderResponse createOrder(CreateOrderRequest request) throws WeixinApiException {

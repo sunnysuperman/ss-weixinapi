@@ -1,6 +1,7 @@
 package com.sunnysuperman.weixinapi.test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.sunnysuperman.commons.util.JSONUtil;
 import com.sunnysuperman.weixinapi.WeixinApp;
@@ -9,13 +10,14 @@ import com.sunnysuperman.weixinapi.WeixinAppType;
 import com.sunnysuperman.weixinapi.exception.WeixinBadAccessTokenException;
 import com.sunnysuperman.weixinapi.shop.CustomShopApi;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
-import com.sunnysuperman.weixinapi.shop.model.AddSpuResponse;
+import com.sunnysuperman.weixinapi.shop.model.DelistingRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetAllCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetShopCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuResponse;
+import com.sunnysuperman.weixinapi.shop.model.SaveSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.Sku;
 import com.sunnysuperman.weixinapi.shop.model.SkuAttr;
 import com.sunnysuperman.weixinapi.shop.model.Spu;
@@ -66,7 +68,7 @@ public class CustomShopApiTest extends BaseTest {
         sku1.setStock_num(1000);
         sku1.setSku_attrs(Arrays.asList(new SkuAttr("规格", "默认")));
         req.setSkus(Arrays.asList(sku1));
-        AddSpuResponse response = api.addSpu(req);
+        SaveSpuResponse response = api.addSpu(req);
 
         System.out.println(JSONUtil.toJSONString(response));
     }
@@ -89,5 +91,37 @@ public class CustomShopApiTest extends BaseTest {
         request.setNeed_edit_spu(needEditSpu);
         GetSpuResponse response = api.getSpu(request);
         System.out.println(JSONUtil.toJSONString(response));
+    }
+
+    public void test_getListing() throws Exception {
+        GetSpuListRequest getSpuListRequest = new GetSpuListRequest();
+        getSpuListRequest.setStatus(5);
+        GetSpuListResponse getSpuListResponse = api.getSpuList(getSpuListRequest);
+        System.out.println(JSONUtil.toJSONString(getSpuListResponse));
+    }
+
+    public void test_getDelisting() throws Exception {
+        GetSpuListRequest getSpuListRequest = new GetSpuListRequest();
+        getSpuListRequest.setStatus(0);
+        GetSpuListResponse getSpuListResponse = api.getSpuList(getSpuListRequest);
+        System.out.println(JSONUtil.toJSONString(getSpuListResponse));
+    }
+
+    public void test_listing() throws Exception {
+        while (true) {
+            GetSpuListRequest getSpuListRequest = new GetSpuListRequest();
+            getSpuListRequest.setStatus(5);
+            GetSpuListResponse getSpuListResponse = api.getSpuList(getSpuListRequest);
+            List<Spu> spuList = getSpuListResponse.getSpus();
+            if (spuList.isEmpty()) {
+                break;
+            }
+            for (Spu spu : spuList) {
+                DelistingRequest request = new DelistingRequest();
+                request.setProduct_id(spu.getProduct_id());
+                api.delistingSpu(request);
+            }
+        }
+
     }
 }

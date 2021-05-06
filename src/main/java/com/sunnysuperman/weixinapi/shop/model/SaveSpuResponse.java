@@ -2,9 +2,9 @@ package com.sunnysuperman.weixinapi.shop.model;
 
 import java.util.List;
 
-public class AddSpuResponse {
+public class SaveSpuResponse {
 
-    public static class AddSpuResponseSku {
+    public static class SaveSpuResponseSku {
         private String sku_id;
         private String out_sku_id;
 
@@ -26,11 +26,12 @@ public class AddSpuResponse {
 
     }
 
-    public static class AddSpuResponseData {
+    public static class SaveSpuResponseData {
         private String product_id;
         private String out_product_id;
         private String create_time;
-        private List<AddSpuResponseSku> skus;
+        private String update_time;
+        private List<SaveSpuResponseSku> skus;
 
         public String getProduct_id() {
             return product_id;
@@ -56,23 +57,31 @@ public class AddSpuResponse {
             this.create_time = create_time;
         }
 
-        public List<AddSpuResponseSku> getSkus() {
+        public String getUpdate_time() {
+            return update_time;
+        }
+
+        public void setUpdate_time(String update_time) {
+            this.update_time = update_time;
+        }
+
+        public List<SaveSpuResponseSku> getSkus() {
             return skus;
         }
 
-        public void setSkus(List<AddSpuResponseSku> skus) {
+        public void setSkus(List<SaveSpuResponseSku> skus) {
             this.skus = skus;
         }
 
     }
 
-    private AddSpuResponseData data;
+    private SaveSpuResponseData data;
 
-    public AddSpuResponseData getData() {
+    public SaveSpuResponseData getData() {
         return data;
     }
 
-    public void setData(AddSpuResponseData data) {
+    public void setData(SaveSpuResponseData data) {
         this.data = data;
     }
 

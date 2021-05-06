@@ -1,18 +1,18 @@
 package com.sunnysuperman.weixinapi.shop.model;
 
 public class Spu extends AddSpuRequest {
-    private long product_id;
+    private Long product_id;
     private String create_time;
     private String update_time;
     private AuditInfo audit_info;
-    private byte status;
-    private byte edit_status;
+    private Integer status;
+    private Integer edit_status;
 
-    public long getProduct_id() {
+    public Long getProduct_id() {
         return product_id;
     }
 
-    public void setProduct_id(long product_id) {
+    public void setProduct_id(Long product_id) {
         this.product_id = product_id;
     }
 
@@ -40,19 +40,19 @@ public class Spu extends AddSpuRequest {
         this.audit_info = audit_info;
     }
 
-    public byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public byte getEdit_status() {
+    public Integer getEdit_status() {
         return edit_status;
     }
 
-    public void setEdit_status(byte edit_status) {
+    public void setEdit_status(Integer edit_status) {
         this.edit_status = edit_status;
     }
 
