@@ -9,13 +9,15 @@ import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
-import com.sunnysuperman.weixinapi.shop.model.SaveSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderResponse;
 import com.sunnysuperman.weixinapi.shop.model.DeleteAuditRequest;
 import com.sunnysuperman.weixinapi.shop.model.DeleteRequest;
 import com.sunnysuperman.weixinapi.shop.model.DelistingRequest;
+import com.sunnysuperman.weixinapi.shop.model.DeliverRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetAllCategoryListResponse;
+import com.sunnysuperman.weixinapi.shop.model.GetOrderRequest;
+import com.sunnysuperman.weixinapi.shop.model.GetOrderResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetShopCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
@@ -23,6 +25,8 @@ import com.sunnysuperman.weixinapi.shop.model.GetSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.ListingRequest;
 import com.sunnysuperman.weixinapi.shop.model.PayOrderRequest;
+import com.sunnysuperman.weixinapi.shop.model.ReceiveRequest;
+import com.sunnysuperman.weixinapi.shop.model.SaveSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.UpdateSpuRequest;
 
 public class CustomShopApi extends TokenAwareWeixinApi {
@@ -85,7 +89,19 @@ public class CustomShopApi extends TokenAwareWeixinApi {
         return postJSON("shop/order/add?access_token=" + ensureAccessToken(), request, new CreateOrderResponse());
     }
 
+    public GetOrderResponse getOrder(GetOrderRequest request) throws WeixinApiException {
+        return postJSON("shop/order/get?access_token=" + ensureAccessToken(), request, new GetOrderResponse());
+    }
+
     public void payOrder(PayOrderRequest request) throws WeixinApiException {
         postJSON("shop/order/pay?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public void deliver(DeliverRequest request) throws WeixinApiException {
+        postJSON("shop/delivery/send?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public void receive(ReceiveRequest request) throws WeixinApiException {
+        postJSON("shop/delivery/recieve?access_token=" + ensureAccessToken(), request, new BaseResponse());
     }
 }

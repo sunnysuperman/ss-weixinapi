@@ -11,12 +11,17 @@ import com.sunnysuperman.weixinapi.exception.WeixinBadAccessTokenException;
 import com.sunnysuperman.weixinapi.shop.CustomShopApi;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.DelistingRequest;
+import com.sunnysuperman.weixinapi.shop.model.DeliverRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetAllCategoryListResponse;
+import com.sunnysuperman.weixinapi.shop.model.GetOrderRequest;
+import com.sunnysuperman.weixinapi.shop.model.GetOrderResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetShopCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuResponse;
+import com.sunnysuperman.weixinapi.shop.model.PayOrderRequest;
+import com.sunnysuperman.weixinapi.shop.model.ReceiveRequest;
 import com.sunnysuperman.weixinapi.shop.model.SaveSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.Sku;
 import com.sunnysuperman.weixinapi.shop.model.SkuAttr;
@@ -24,6 +29,8 @@ import com.sunnysuperman.weixinapi.shop.model.Spu;
 
 public class CustomShopApiTest extends BaseTest {
     private CustomShopApi api;
+    private String outOrderId = "xx";
+    private String openid = "xx";
 
     @Override
     protected void setUp() throws Exception {
@@ -122,6 +129,39 @@ public class CustomShopApiTest extends BaseTest {
                 api.delistingSpu(request);
             }
         }
+    }
 
+    public void test_payOrder() throws Exception {
+        PayOrderRequest request = new PayOrderRequest();
+        request.setOut_order_id(outOrderId);
+        request.setOpenid(openid);
+        request.setAction_type(1);
+        request.setTransaction_id("123");
+        request.setPay_time("2021-05-06 22:00:00");
+        api.payOrder(request);
+    }
+
+    public void test_getOrder() throws Exception {
+        GetOrderRequest request = new GetOrderRequest();
+        request.setOut_order_id(outOrderId);
+        request.setOpenid(openid);
+        GetOrderResponse response = api.getOrder(request);
+        assertTrue(response.getOrder().getOrder_id() != null);
+        System.out.println(JSONUtil.toJSONString(response));
+    }
+
+    public void test_deliver() throws Exception {
+        DeliverRequest request = new DeliverRequest();
+        request.setOut_order_id(outOrderId);
+        request.setOpenid(openid);
+        request.setFinish_all_delivery((byte) 1);
+        api.deliver(request);
+    }
+
+    public void test_receive() throws Exception {
+        ReceiveRequest request = new ReceiveRequest();
+        request.setOut_order_id(outOrderId);
+        request.setOpenid(openid);
+        api.receive(request);
     }
 }
