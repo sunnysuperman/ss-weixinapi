@@ -8,6 +8,7 @@ import com.sunnysuperman.weixinapi.TokenAwareWeixinApi;
 import com.sunnysuperman.weixinapi.WeixinApp;
 import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
+import com.sunnysuperman.weixinapi.shop.model.AddAftersaleRequest;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderResponse;
@@ -103,5 +104,9 @@ public class CustomShopApi extends TokenAwareWeixinApi {
 
     public void receive(ReceiveRequest request) throws WeixinApiException {
         postJSON("shop/delivery/recieve?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public void addAftersale(AddAftersaleRequest request) throws WeixinApiException {
+        postJSON("shop/aftersale/add?access_token=" + ensureAccessToken(), request, new BaseResponse());
     }
 }

@@ -1,6 +1,9 @@
 package com.sunnysuperman.weixinapi.test;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.sunnysuperman.commons.util.JSONUtil;
@@ -9,6 +12,7 @@ import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.WeixinAppType;
 import com.sunnysuperman.weixinapi.exception.WeixinBadAccessTokenException;
 import com.sunnysuperman.weixinapi.shop.CustomShopApi;
+import com.sunnysuperman.weixinapi.shop.model.AddAftersaleRequest;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.DelistingRequest;
 import com.sunnysuperman.weixinapi.shop.model.DeliverRequest;
@@ -21,6 +25,7 @@ import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.PayOrderRequest;
+import com.sunnysuperman.weixinapi.shop.model.ProductInfo;
 import com.sunnysuperman.weixinapi.shop.model.ReceiveRequest;
 import com.sunnysuperman.weixinapi.shop.model.SaveSpuResponse;
 import com.sunnysuperman.weixinapi.shop.model.Sku;
@@ -163,5 +168,23 @@ public class CustomShopApiTest extends BaseTest {
         request.setOut_order_id(outOrderId);
         request.setOpenid(openid);
         api.receive(request);
+    }
+
+    public void test_addAftersale() throws Exception {
+        AddAftersaleRequest request = new AddAftersaleRequest();
+        request.setOut_order_id("");
+        request.setOut_aftersale_id("");
+        request.setOpenid("");
+        request.setCreate_time(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        request.setType(1);
+        request.setStatus(13);
+        request.setFinish_all_aftersale(1);
+
+        ProductInfo productInfo = new ProductInfo();
+        productInfo.setOut_product_id("");
+        productInfo.setOut_sku_id("");
+        productInfo.setProduct_cnt(1);
+        request.setProduct_infos(Collections.singletonList(productInfo));
+        api.addAftersale(request);
     }
 }
