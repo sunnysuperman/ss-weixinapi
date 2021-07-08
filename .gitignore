@@ -6,6 +6,10 @@
 /.project
 /.settings/
 
+#idea
+/.idea
+ss-weixinapi.iml
+
 #virtual machine crash logs
 hs_err_pid*
 
