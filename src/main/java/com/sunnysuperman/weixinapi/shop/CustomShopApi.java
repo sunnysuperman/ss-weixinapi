@@ -10,6 +10,10 @@ import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.shop.model.AddAftersaleRequest;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
+import com.sunnysuperman.weixinapi.shop.model.AuditCategoryReq;
+import com.sunnysuperman.weixinapi.shop.model.AuditCategoryRequest;
+import com.sunnysuperman.weixinapi.shop.model.AuditCategoryResponse;
+import com.sunnysuperman.weixinapi.shop.model.AuditResponse;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderResponse;
 import com.sunnysuperman.weixinapi.shop.model.DeleteAuditRequest;
@@ -108,5 +112,15 @@ public class CustomShopApi extends TokenAwareWeixinApi {
 
     public void addAftersale(AddAftersaleRequest request) throws WeixinApiException {
         postJSON("shop/aftersale/add?access_token=" + ensureAccessToken(), request, new BaseResponse());
+    }
+
+    public AuditResponse auditCategory(AuditCategoryReq request) throws WeixinApiException {
+        return postJSON("shop/audit/audit_category?access_token=" + ensureAccessToken(),
+                new AuditCategoryRequest(request), new AuditResponse());
+    }
+
+    public AuditCategoryResponse auditCategoryResult(String auditId) throws WeixinApiException {
+        return postJSON("shop/audit/result?access_token=" + ensureAccessToken(),
+                Collections.singletonMap("audit_id", auditId), new AuditCategoryResponse());
     }
 }
