@@ -1,6 +1,8 @@
 package com.sunnysuperman.weixinapi.shop;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sunnysuperman.weixinapi.BaseResponse;
 import com.sunnysuperman.weixinapi.HttpClientFactory;
@@ -28,6 +30,7 @@ import com.sunnysuperman.weixinapi.shop.model.GetSpuListRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuResponse;
+import com.sunnysuperman.weixinapi.shop.model.ImgUploadResponse;
 import com.sunnysuperman.weixinapi.shop.model.ListingRequest;
 import com.sunnysuperman.weixinapi.shop.model.PayOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.ReceiveRequest;
@@ -122,5 +125,13 @@ public class CustomShopApi extends TokenAwareWeixinApi {
     public AuditCategoryResponse auditCategoryResult(String auditId) throws WeixinApiException {
         return postJSON("shop/audit/result?access_token=" + ensureAccessToken(),
                 Collections.singletonMap("audit_id", auditId), new AuditCategoryResponse());
+    }
+
+    public ImgUploadResponse imgUpload(String imgUrl) throws WeixinApiException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("resp_type", 1);
+        map.put("upload_type", 1);
+        map.put("img_url", imgUrl);
+        return post("shop/img/upload?access_token=" + ensureAccessToken(), map, new ImgUploadResponse());
     }
 }
