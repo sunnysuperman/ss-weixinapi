@@ -59,7 +59,7 @@ public class WeworkSuitApi extends TokenAwareWeworkApi {
         String preAuthCode = res.getPre_auth_code();
         setSessionInfoForTest(preAuthCode);
         return "https://open.work.weixin.qq.com/3rdapp/install?suite_id=" + appId + "&pre_auth_code=" + preAuthCode
-                + "&redirect_uri=" + redirectUri;
+                + "&redirect_uri=" + URLEncoder.encode(redirectUri, StringUtil.UTF8);
     }
 
     public void setSessionInfo(String preAuthCode) throws WeixinApiException {
