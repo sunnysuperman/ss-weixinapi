@@ -51,9 +51,28 @@ public class WeworkSuitApi extends TokenAwareWeworkApi {
         postJSON("/cgi-bin/service/set_session_info?suite_access_token=" + accessToken, map, new BaseResponse());
     }
 
+    public String getPreAuthUrlForTest(String redirectUri) throws Exception {
+        String appId = app.getAppId();
+        GetPreAuthCodeResponse res = getPreAuthCode();
+        String preAuthCode = res.getPre_auth_code();
+        setSessionInfoForTest(preAuthCode);
+        return "https://open.work.weixin.qq.com/3rdapp/install?suite_id=" + appId + "&pre_auth_code=" + preAuthCode
+                + "&redirect_uri=" + redirectUri;
+    }
+
+    public void setSessionInfo(String preAuthCode) throws WeixinApiException {
+        String accessToken = ensureAccessToken();
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("pre_auth_code", preAuthCode);
+        map.put("session_info", Collections.singletonMap("auth_type", 0));
+        postJSON("/cgi-bin/service/set_session_info?suite_access_token=" + accessToken, map, new BaseResponse());
+    }
+
     public String getPreAuthUrl(String redirectUri) throws Exception {
         String appId = app.getAppId();
-        GetPreAuthCodeResponse preAuthCode = getPreAuthCode();
+        GetPreAuthCodeResponse res = getPreAuthCode();
+        String preAuthCode = res.getPre_auth_code();
+        setSessionInfo(preAuthCode);
         return "https://open.work.weixin.qq.com/3rdapp/install?suite_id=" + appId + "&pre_auth_code=" + preAuthCode
                 + "&redirect_uri=" + redirectUri;
     }
