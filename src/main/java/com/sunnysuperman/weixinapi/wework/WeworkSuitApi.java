@@ -1,9 +1,11 @@
 package com.sunnysuperman.weixinapi.wework;
 
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sunnysuperman.commons.util.StringUtil;
 import com.sunnysuperman.weixinapi.BaseResponse;
 import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.WeixinApp;
@@ -74,6 +76,6 @@ public class WeworkSuitApi extends TokenAwareWeworkApi {
         String preAuthCode = res.getPre_auth_code();
         setSessionInfo(preAuthCode);
         return "https://open.work.weixin.qq.com/3rdapp/install?suite_id=" + appId + "&pre_auth_code=" + preAuthCode
-                + "&redirect_uri=" + redirectUri;
+                + "&redirect_uri=" + URLEncoder.encode(redirectUri, StringUtil.UTF8);
     }
 }
