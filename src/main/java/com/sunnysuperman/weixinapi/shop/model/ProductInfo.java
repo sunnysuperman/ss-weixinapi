@@ -3,11 +3,12 @@ package com.sunnysuperman.weixinapi.shop.model;
 public class ProductInfo {
     private String out_product_id;
     private String out_sku_id;
-    private String head_img;
-    private String title;
     private String path;
+    private String title;
+    private String head_img;
     private Integer product_cnt;
     private Long sale_price;
+    private Long sku_real_price;
 
     public String getOut_product_id() {
         return out_product_id;
@@ -25,12 +26,12 @@ public class ProductInfo {
         this.out_sku_id = out_sku_id;
     }
 
-    public String getHead_img() {
-        return head_img;
+    public String getPath() {
+        return path;
     }
 
-    public void setHead_img(String head_img) {
-        this.head_img = head_img;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getTitle() {
@@ -41,12 +42,12 @@ public class ProductInfo {
         this.title = title;
     }
 
-    public String getPath() {
-        return path;
+    public String getHead_img() {
+        return head_img;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setHead_img(String head_img) {
+        this.head_img = head_img;
     }
 
     public Integer getProduct_cnt() {
@@ -65,4 +66,11 @@ public class ProductInfo {
         this.sale_price = sale_price;
     }
 
+    public Long getSku_real_price() {
+        return sku_real_price;
+    }
+
+    public void setSku_real_price(Long sku_real_price) {
+        this.sku_real_price = sku_real_price;
+    }
 }

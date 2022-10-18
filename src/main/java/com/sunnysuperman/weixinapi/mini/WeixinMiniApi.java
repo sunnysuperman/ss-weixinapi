@@ -118,6 +118,17 @@ public class WeixinMiniApi extends TokenAwareWeixinApi {
     }
 
     /**
+     * @see <a href=
+     *      "https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/code-management/getCodePrivacyInfo.html">
+     *      获取隐私接口检测结果 </a>
+     * @return
+     */
+    public GetCodePrivacyInfoResponse getCodePrivacyInfo() throws WeixinApiException {
+        return get("wxa/security/get_code_privacy_info?access_token=" + ensureAccessToken(), Collections.emptyMap(),
+                new GetCodePrivacyInfoResponse());
+    }
+
+    /**
      * 获取体验小程序的体验二维码URL
      */
     public String getReleaseQrcode(String path) throws WeixinApiException {
