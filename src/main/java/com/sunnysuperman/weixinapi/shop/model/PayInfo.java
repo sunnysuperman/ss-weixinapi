@@ -6,6 +6,7 @@ public class PayInfo {
     private String prepay_time;
     private String transaction_id;
     private String pay_time;
+    private Integer pay_method_type;
 
     public String getPay_method() {
         return pay_method;
@@ -47,4 +48,11 @@ public class PayInfo {
         this.pay_time = pay_time;
     }
 
+    public Integer getPay_method_type() {
+        return pay_method_type;
+    }
+
+    public void setPay_method_type(Integer pay_method_type) {
+        this.pay_method_type = pay_method_type;
+    }
 }

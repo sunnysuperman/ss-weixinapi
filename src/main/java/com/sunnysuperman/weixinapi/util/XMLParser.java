@@ -85,4 +85,50 @@ public class XMLParser {
         }
     }
 
+    public static Map<String, Object> getMapFromXML(String xmlString, int depth)
+            throws ParserConfigurationException, IOException, SAXException {
+        if (StringUtil.isEmpty(xmlString)) {
+            return null;
+        }
+
+        // 这里用Dom的方式解析回包的最主要目的是防止API新增回包字段
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputStream in = new ByteArrayInputStream(xmlString.getBytes(StringUtil.UTF8_CHARSET));
+        Document document = builder.parse(in);
+
+        // 获取到document里面的全部结点
+        NodeList allNodes = document.getFirstChild().getChildNodes();
+        return nodes2map(allNodes, depth, 1);
+    }
+
+    private static Map<String, Object> nodes2map(NodeList allNodes, int depth, int current) {
+        Node node;
+        Map<String, Object> map = new HashMap<>();
+        int i = 0;
+        while (i < allNodes.getLength()) {
+            node = allNodes.item(i);
+            if (node instanceof Element) {
+                Object value = null;
+                if (current < depth && node.hasChildNodes()) {
+                    Map<String, Object> child = nodes2map(node.getChildNodes(), depth, current + 1);
+                    if (!child.isEmpty()) {
+                        value = child;
+                    }
+                }
+                if (value == null) {
+                    value = node.getTextContent();
+                }
+                // 首字母都转小写以便转换 Bean
+                String nodeName = node.getNodeName();
+                char firstChar = nodeName.charAt(0);
+                char c = Character.toLowerCase(firstChar);
+                nodeName = nodeName.replace(firstChar, c);
+                map.put(nodeName, value);
+            }
+            i++;
+        }
+        return map;
+    }
+
 }

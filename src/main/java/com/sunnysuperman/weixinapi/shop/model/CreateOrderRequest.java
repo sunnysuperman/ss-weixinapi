@@ -4,8 +4,20 @@ import java.util.List;
 
 public class CreateOrderRequest {
 
+    private String create_time;
+    private String out_order_id;
+    private String openid;
+    private String path;
+    private int scene = 1000;
+    private OrderDetail order_detail;
+    private DeliveryDetail delivery_detail = new DeliveryDetail();
+    private AddressInfo address_info;
+    private int fund_type = 1;
+    private long expire_time;
+
     public static class DeliveryDetail {
-        private int delivery_type;
+
+        private int delivery_type = 1;
 
         public int getDelivery_type() {
             return delivery_type;
@@ -19,7 +31,11 @@ public class CreateOrderRequest {
 
     public static class OrderDetail {
         private List<ProductInfo> product_infos;
-        private PayInfo pay_info;
+        private PayInfo pay_info = new PayInfo() {
+            {
+                setPay_method_type(0);
+            }
+        };
         private PriceInfo price_info;
 
         public List<ProductInfo> getProduct_infos() {
@@ -45,18 +61,29 @@ public class CreateOrderRequest {
         public void setPrice_info(PriceInfo price_info) {
             this.price_info = price_info;
         }
-
     }
 
-    private String create_time;
-    private int type;
-    private String out_order_id;
-    private String openid;
-    private String path;
-    private int scene = 1177;
-    private OrderDetail order_detail;
-    private DeliveryDetail delivery_detail;
-    private AddressInfo address_info;
+    public void validate() {
+        long sumSkuRealPrice = 0;
+        long salePrice = 0;
+        for (ProductInfo item : this.order_detail.getProduct_infos()) {
+            sumSkuRealPrice += item.getSku_real_price();
+            salePrice += item.getSale_price() * item.getProduct_cnt();
+        }
+        Long freight = this.order_detail.getPrice_info().getFreight();
+
+        Long order_price = this.order_detail.getPrice_info().getOrder_price();
+        if (order_price != sumSkuRealPrice + freight) {
+            throw new RuntimeException("code 1");
+        }
+        Long discounted_price = order_detail.getPrice_info().getDiscounted_price();
+        if (discounted_price == null) {
+            discounted_price = 0L;
+        }
+        if (order_price != salePrice - discounted_price) {
+            throw new RuntimeException("code 2");
+        }
+    }
 
     public String getCreate_time() {
         return create_time;
@@ -64,14 +91,6 @@ public class CreateOrderRequest {
 
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getOut_order_id() {
@@ -130,4 +149,19 @@ public class CreateOrderRequest {
         this.address_info = address_info;
     }
 
+    public int getFund_type() {
+        return fund_type;
+    }
+
+    public void setFund_type(int fund_type) {
+        this.fund_type = fund_type;
+    }
+
+    public long getExpire_time() {
+        return expire_time;
+    }
+
+    public void setExpire_time(long expire_time) {
+        this.expire_time = expire_time;
+    }
 }
