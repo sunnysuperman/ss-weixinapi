@@ -12,19 +12,26 @@ import com.sunnysuperman.weixinapi.WeixinAppTokenGetter;
 import com.sunnysuperman.weixinapi.exception.WeixinApiException;
 import com.sunnysuperman.weixinapi.shop.model.AddAftersaleRequest;
 import com.sunnysuperman.weixinapi.shop.model.AddSpuRequest;
+import com.sunnysuperman.weixinapi.shop.model.AfterSaleAddRequest;
 import com.sunnysuperman.weixinapi.shop.model.AuditCategoryReq;
 import com.sunnysuperman.weixinapi.shop.model.AuditCategoryRequest;
 import com.sunnysuperman.weixinapi.shop.model.AuditCategoryResponse;
 import com.sunnysuperman.weixinapi.shop.model.AuditResponse;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.CreateOrderResponse;
+import com.sunnysuperman.weixinapi.shop.model.CustomerServiceAccount;
 import com.sunnysuperman.weixinapi.shop.model.DeleteAuditRequest;
 import com.sunnysuperman.weixinapi.shop.model.DeleteRequest;
 import com.sunnysuperman.weixinapi.shop.model.DelistingRequest;
 import com.sunnysuperman.weixinapi.shop.model.DeliverRequest;
+import com.sunnysuperman.weixinapi.shop.model.GetAfterSalesOrderResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetAllCategoryListResponse;
+import com.sunnysuperman.weixinapi.shop.model.GetCompanyListResponse;
+import com.sunnysuperman.weixinapi.shop.model.GetCustomerServiceAccountResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetOrderRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetOrderResponse;
+import com.sunnysuperman.weixinapi.shop.model.GetPaymentParamsRequest;
+import com.sunnysuperman.weixinapi.shop.model.GetPaymentParamsResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetShopCategoryListResponse;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListRequest;
 import com.sunnysuperman.weixinapi.shop.model.GetSpuListResponse;
@@ -106,7 +113,8 @@ public class CustomShopApi extends TokenAwareWeixinApi {
     }
 
     public void deliver(DeliverRequest request) throws WeixinApiException {
-        postJSON("shop/delivery/send?access_token=" + ensureAccessToken(), request, new BaseResponse());
+        String api = "shop/delivery/send?access_token=" + ensureAccessToken();
+        postJSON(api, request, new BaseResponse());
     }
 
     public void receive(ReceiveRequest request) throws WeixinApiException {
@@ -133,5 +141,54 @@ public class CustomShopApi extends TokenAwareWeixinApi {
         map.put("upload_type", 1);
         map.put("img_url", imgUrl);
         return post("shop/img/upload?access_token=" + ensureAccessToken(), map, new ImgUploadResponse());
+    }
+
+    public GetCustomerServiceAccountResponse getCustomerServiceAccount() throws WeixinApiException {
+        return postJSON("shop/account/get_info?access_token=" + ensureAccessToken(), Collections.emptyMap(),
+                new GetCustomerServiceAccountResponse());
+    }
+
+    public void updateCustomerServiceAccount(CustomerServiceAccount accountInfo) throws WeixinApiException {
+        postJSON("shop/account/update_info?access_token=" + ensureAccessToken(), accountInfo, new BaseResponse());
+    }
+
+    public GetPaymentParamsResponse getPaymentParams(GetPaymentParamsRequest request) throws WeixinApiException {
+        return postJSON("shop/order/getpaymentparams?access_token=" + ensureAccessToken(), request,
+                new GetPaymentParamsResponse());
+    }
+
+    public GetCompanyListResponse getCompanyList() throws WeixinApiException {
+        return postJSON("shop/delivery/get_company_list?access_token=" + ensureAccessToken(), Collections.emptyMap(),
+                new GetCompanyListResponse());
+    }
+
+    public void updateAfterSale(AfterSaleAddRequest req) throws WeixinApiException {
+        String api = "shop/ecaftersale/update?access_token=" + ensureAccessToken();
+        postJSON(api, req, new BaseResponse());
+    }
+
+    public GetAfterSalesOrderResponse getAfterSale(String outAftersaleId) throws WeixinApiException {
+        String api = "shop/ecaftersale/get?access_token=" + ensureAccessToken();
+        return postJSON(api, Collections.singletonMap("out_aftersale_id", outAftersaleId),
+                new GetAfterSalesOrderResponse());
+    }
+
+    public void addAfterSale(AfterSaleAddRequest req) throws WeixinApiException {
+        postJSON("shop/ecaftersale/add?access_token=" + ensureAccessToken(), req, new BaseResponse());
+    }
+
+    public void acceptRefund(Long aftersaleId) throws WeixinApiException {
+        postJSON("shop/ecaftersale/acceptrefund?access_token=" + ensureAccessToken(),
+                Collections.singletonMap("aftersale_id", aftersaleId), new BaseResponse());
+    }
+
+    public void acceptRefund(String outAftersaleId) throws WeixinApiException {
+        postJSON("shop/ecaftersale/acceptrefund?access_token=" + ensureAccessToken(),
+                Collections.singletonMap("out_aftersale_id", outAftersaleId), new BaseResponse());
+    }
+
+    public SaveSpuResponse updateSpuWithoutAudit(UpdateSpuRequest req) throws WeixinApiException {
+        String api = "shop/spu/update_without_audit?access_token=" + ensureAccessToken();
+        return postJSON(api, req, new SaveSpuResponse());
     }
 }

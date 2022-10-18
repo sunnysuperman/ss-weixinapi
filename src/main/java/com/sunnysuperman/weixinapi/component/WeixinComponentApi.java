@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sunnysuperman.commons.bean.Bean;
 import com.sunnysuperman.commons.util.StringUtil;
 import com.sunnysuperman.weixinapi.HttpClientFactory;
 import com.sunnysuperman.weixinapi.WeixinApi;
@@ -111,4 +112,41 @@ public class WeixinComponentApi extends WeixinApi {
         return postJSON("cgi-bin/component/api_get_authorizer_info?component_access_token=" + componentAccessToken,
                 params, new AuthorizerInfoResponse(), true);
     }
+
+    public Map<String, Object> decrypt(String postData, String signature, String timestamp, String nonce) {
+        try {
+            WXBizMsgCrypt crypt = new WXBizMsgCrypt(this.app.getAppToken(), this.app.getAppAesKey(),
+                    this.app.getAppId());
+            String xml = crypt.decryptMsg(signature, timestamp, nonce, postData);
+            return XMLParser.getMapFromXML(xml, 2);
+        } catch (Exception var7) {
+            throw new RuntimeException(var7);
+        }
+    }
+
+    public WxshopPayNotifyResponse decryptWxshopPayment(String postData, String signature, String timestamp,
+                                                        String nonce) {
+        try {
+            WXBizMsgCrypt crypt = new WXBizMsgCrypt(this.app.getAppToken(), this.app.getAppAesKey(),
+                    this.app.getAppId());
+            String xml = crypt.decryptMsg(signature, timestamp, nonce, postData);
+            Map<String, Object> map = XMLParser.getMapFromXML(xml, 2);
+            return Bean.fromMap(map, new WxshopPayNotifyResponse());
+        } catch (Exception var7) {
+            throw new RuntimeException(var7);
+        }
+    }
+
+    public WxshopAftersaleResponse decryptAftersale(String postData, String signature, String timestamp, String nonce) {
+        try {
+            WXBizMsgCrypt crypt = new WXBizMsgCrypt(this.app.getAppToken(), this.app.getAppAesKey(),
+                    this.app.getAppId());
+            String xml = crypt.decryptMsg(signature, timestamp, nonce, postData);
+            Map<String, Object> map = XMLParser.getMapFromXML(xml, 2);
+            return Bean.fromMap(map, new WxshopAftersaleResponse());
+        } catch (Exception var7) {
+            throw new RuntimeException(var7);
+        }
+    }
+
 }

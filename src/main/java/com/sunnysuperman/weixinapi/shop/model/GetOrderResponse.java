@@ -4,11 +4,106 @@ import java.util.List;
 
 public class GetOrderResponse {
 
+    private Order order;
+
+    public static class Order {
+        private Long order_id;
+        private String out_order_id;
+        private Integer status;
+        private String path;
+        private AftersaleInfo related_aftersale_info;
+        private OrderDetail order_detail;
+
+        public Long getOrder_id() {
+            return order_id;
+        }
+
+        public void setOrder_id(Long order_id) {
+            this.order_id = order_id;
+        }
+
+        public String getOut_order_id() {
+            return out_order_id;
+        }
+
+        public void setOut_order_id(String out_order_id) {
+            this.out_order_id = out_order_id;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public AftersaleInfo getRelated_aftersale_info() {
+            return related_aftersale_info;
+        }
+
+        public void setRelated_aftersale_info(AftersaleInfo related_aftersale_info) {
+            this.related_aftersale_info = related_aftersale_info;
+        }
+
+        public OrderDetail getOrder_detail() {
+            return order_detail;
+        }
+
+        public void setOrder_detail(OrderDetail order_detail) {
+            this.order_detail = order_detail;
+        }
+    }
+
+    public static class AftersaleInfo {
+        private List<Aftersale> aftersale_list;
+
+        public List<Aftersale> getAftersale_list() {
+            return aftersale_list;
+        }
+
+        public void setAftersale_list(List<Aftersale> aftersale_list) {
+            this.aftersale_list = aftersale_list;
+        }
+    }
+
+    public static class Aftersale {
+        private Long aftersale_id;
+        private String out_aftersale_id;
+
+        public Long getAftersale_id() {
+            return aftersale_id;
+        }
+
+        public void setAftersale_id(Long aftersale_id) {
+            this.aftersale_id = aftersale_id;
+        }
+
+        public String getOut_aftersale_id() {
+            return out_aftersale_id;
+        }
+
+        public void setOut_aftersale_id(String out_aftersale_id) {
+            this.out_aftersale_id = out_aftersale_id;
+        }
+    }
+
     public static class OrderDetail {
+
         private List<ProductInfo> product_infos;
         private PayInfo pay_info;
         private List<PayInfo> multi_pay_info;
         private PriceInfo price_info;
+        private PromotionInfo promotion_info;
+        private DeliveryDetail delivery_detail;
 
         public List<ProductInfo> getProduct_infos() {
             return product_infos;
@@ -42,104 +137,12 @@ public class GetOrderResponse {
             this.price_info = price_info;
         }
 
-    }
-
-    public static class DeliveryDetail {
-        private Integer delivery_type;
-        private Byte finish_all_delivery;
-        private List<Delivery> delivery_list;
-
-        public Integer getDelivery_type() {
-            return delivery_type;
+        public PromotionInfo getPromotion_info() {
+            return promotion_info;
         }
 
-        public void setDelivery_type(Integer delivery_type) {
-            this.delivery_type = delivery_type;
-        }
-
-        public Byte getFinish_all_delivery() {
-            return finish_all_delivery;
-        }
-
-        public void setFinish_all_delivery(Byte finish_all_delivery) {
-            this.finish_all_delivery = finish_all_delivery;
-        }
-
-        public List<Delivery> getDelivery_list() {
-            return delivery_list;
-        }
-
-        public void setDelivery_list(List<Delivery> delivery_list) {
-            this.delivery_list = delivery_list;
-        }
-
-    }
-
-    public static class Order {
-        private Long order_id;
-        private String out_order_id;
-        private String openid;
-        private String create_time;
-        private Integer status;
-        private String path;
-        private OrderDetail order_detail;
-        private DeliveryDetail delivery_detail;
-        private AddressInfo address_info;
-
-        public Long getOrder_id() {
-            return order_id;
-        }
-
-        public void setOrder_id(Long order_id) {
-            this.order_id = order_id;
-        }
-
-        public String getOut_order_id() {
-            return out_order_id;
-        }
-
-        public void setOut_order_id(String out_order_id) {
-            this.out_order_id = out_order_id;
-        }
-
-        public String getOpenid() {
-            return openid;
-        }
-
-        public void setOpenid(String openid) {
-            this.openid = openid;
-        }
-
-        public String getCreate_time() {
-            return create_time;
-        }
-
-        public void setCreate_time(String create_time) {
-            this.create_time = create_time;
-        }
-
-        public Integer getStatus() {
-            return status;
-        }
-
-        public void setStatus(Integer status) {
-            this.status = status;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public OrderDetail getOrder_detail() {
-            return order_detail;
-        }
-
-        public void setOrder_detail(OrderDetail order_detail) {
-            this.order_detail = order_detail;
+        public void setPromotion_info(PromotionInfo promotion_info) {
+            this.promotion_info = promotion_info;
         }
 
         public DeliveryDetail getDelivery_detail() {
@@ -149,18 +152,38 @@ public class GetOrderResponse {
         public void setDelivery_detail(DeliveryDetail delivery_detail) {
             this.delivery_detail = delivery_detail;
         }
-
-        public AddressInfo getAddress_info() {
-            return address_info;
-        }
-
-        public void setAddress_info(AddressInfo address_info) {
-            this.address_info = address_info;
-        }
-
     }
 
-    private Order order;
+    public static class PromotionInfo {
+
+        private String promoter_id;
+        private String finder_nickname;
+        private String sharer_openid;
+
+        public String getPromoter_id() {
+            return promoter_id;
+        }
+
+        public void setPromoter_id(String promoter_id) {
+            this.promoter_id = promoter_id;
+        }
+
+        public String getFinder_nickname() {
+            return finder_nickname;
+        }
+
+        public void setFinder_nickname(String finder_nickname) {
+            this.finder_nickname = finder_nickname;
+        }
+
+        public String getSharer_openid() {
+            return sharer_openid;
+        }
+
+        public void setSharer_openid(String sharer_openid) {
+            this.sharer_openid = sharer_openid;
+        }
+    }
 
     public Order getOrder() {
         return order;
